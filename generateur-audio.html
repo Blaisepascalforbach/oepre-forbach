@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Générateur des voix – OEPRE</title>
+<style>
+  body{font-family:system-ui,sans-serif;max-width:680px;margin:2rem auto;padding:0 1rem;color:#0f172a;line-height:1.5}
+  label{display:block;margin:.6rem 0 .2rem;font-weight:600} input[type=password],input[type=file]{width:100%}
+  button,a.btn{margin-top:1rem;padding:.7rem 1.2rem;border:0;border-radius:10px;background:#3730a3;color:#fff;font-weight:700;font-size:1rem;cursor:pointer;text-decoration:none;display:inline-block}
+  button:disabled{opacity:.5} progress{width:100%;margin-top:1rem} pre{background:#f1f5f9;padding:.8rem;border-radius:8px;white-space:pre-wrap;max-height:22rem;overflow:auto;font-size:.85rem}
+  .note{background:#fef9c3;border:1px solid #fde047;padding:.6rem .8rem;border-radius:8px;font-size:.9rem}
+</style>
+</head>
+<body>
+<h1>Générateur des voix</h1>
+<p class="note">Outil à garder <strong>sur votre ordinateur</strong> : ne le mettez pas en ligne. Votre clé reste dans cette page (elle n'est envoyée qu'à Google). Créez une clé temporaire restreinte à l'API Text-to-Speech, puis supprimez-la après usage.</p>
+<label for="f">1. Votre fichier index.html</label>
+<input type="file" id="f" accept=".html">
+<label for="k">2. Clé API Google Cloud (Text-to-Speech)</label>
+<input type="password" id="k" autocomplete="off">
+<button id="go">3. Générer les audios</button>
+<progress id="p" value="0" max="1" hidden></progress>
+<pre id="log" hidden></pre>
+<a id="dl" class="btn" hidden download="audio.zip">4. Télécharger audio.zip</a>
+
+<script>
+const API = 'https://texttospeech.googleapis.com/v1/';
+const MAP = { Albanais:'sq', Anglais:'en', Arabe:'ar', Armenien:'hy', Dari:'fa-AF', Georgien:'ka', Pachto:'ps', Russe:'ru', Turc:'tr', Ukrainien:'uk' };
+// [code de langue à interroger, région préférée]. Dari : uniquement « prs » (le persan d'Iran n'est pas du dari).
+const QUERY = { fr:['fr','fr-FR'], sq:['sq'], en:['en','en-GB'], ar:['ar'], hy:['hy'], 'fa-AF':['prs'], ka:['ka'], ps:['ps'], ru:['ru'], tr:['tr'], uk:['uk'] };
+const RANK = [/Chirp3-HD/, /Chirp-HD/, /Neural2/, /Studio/, /Wavenet/, /Standard/];
+const $ = id => document.getElementById(id);
+const log = t => { $('log').hidden = false; $('log').textContent += t + '\n'; $('log').scrollTop = 1e9; };
+
+function extract(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html'), fr = {};
+  doc.querySelectorAll('[data-audio-fr]').forEach(el => {
+    el.querySelectorAll('br').forEach(b => b.replaceWith(' '));
+    fr[el.dataset.audioFr] = el.textContent.replace(/\s+/g, ' ').trim();
+  });
+  const src = [...doc.scripts].map(s => s.textContent).find(t => t.includes('const i18n = {'));
+  if (!src) throw new Error("Dictionnaire i18n introuvable : ce n'est pas le bon index.html.");
+  const start = src.indexOf('{', src.indexOf('const i18n = '));
+  let depth = 0, q = null, i = start;
+  for (; i < src.length; i++) {
+    const c = src[i];
+    if (q) { if (c === '\\') i++; else if (c === q) q = null; }
+    else if (c === '"' || c === "'" || c === '`') q = c;
+    else if (c === '{') depth++;
+    else if (c === '}' && --depth === 0) break;
+  }
+  return { fr, i18n: new Function('return ' + src.slice(start, i + 1))() };
+}
+
+async function api(path, opts) {
+  const r = await fetch(API + path, opts);
+  if (!r.ok) { const e = await r.json().catch(() => ({})); const err = new Error((e.error && e.error.message) || r.status); err.status = r.status; throw err; }
+  return r.json();
+}
+async function pickVoice(code, key) {
+  const [base, region] = QUERY[code];
+  const { voices = [] } = await api('voices?languageCode=' + base + '&key=' + encodeURIComponent(key));
+  let list = voices.filter(v => !region || v.languageCodes[0] === region);
+  if (!list.length) list = voices;
+  const score = v => { const r = RANK.findIndex(re => re.test(v.name)); return (r < 0 ? 9 : r) * 10 + (v.ssmlGender === 'FEMALE' ? 0 : 1); };
+  return list.sort((a, b) => score(a) - score(b) || a.name.localeCompare(b.name))[0];
+}
+async function synth(text, voice, key) {
+  if (new TextEncoder().encode(text).length > 4800) throw new Error('texte trop long (5000 octets max)');
+  const audioConfig = { audioEncoding: 'MP3' };
+  if (!/Chirp/.test(voice.name)) audioConfig.speakingRate = 0.95;
+  for (let t = 0; t < 4; t++) {
+    try {
+      const res = await api('text:synthesize?key=' + encodeURIComponent(key), { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ input: { text }, voice: { languageCode: voice.languageCodes[0], name: voice.name }, audioConfig }) });
+      return Uint8Array.from(atob(res.audioContent), c => c.charCodeAt(0));
+    } catch (e) { if (e.status !== 429 && e.status < 500) throw e; await new Promise(s => setTimeout(s, 1500 * (t + 1))); }
+  }
+  throw new Error('trop d’échecs');
+}
+
+const CRC = (() => { const t = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const crc32 = b => { let c = -1; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ -1) >>> 0; };
+function zip(files) { // ZIP sans compression (les MP3 sont déjà compressés)
+  const enc = new TextEncoder(), parts = [], cd = []; let off = 0;
+  for (const f of files) {
+    const n = enc.encode(f.name), crc = crc32(f.data), len = f.data.length;
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(12, 0x21, true);
+    h.setUint32(14, crc, true); h.setUint32(18, len, true); h.setUint32(22, len, true); h.setUint16(26, n.length, true);
+    parts.push(h, n, f.data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(14, 0x21, true);
+    c.setUint32(16, crc, true); c.setUint32(20, len, true); c.setUint32(24, len, true); c.setUint16(28, n.length, true); c.setUint32(42, off, true);
+    cd.push(c, n); off += 30 + n.length + len;
+  }
+  const size = cd.reduce((s, p) => s + p.byteLength, 0), e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, size, true); e.setUint32(16, off, true);
+  return new Blob([...parts, ...cd, e], { type: 'application/zip' });
+}
+
+$('go').onclick = async () => {
+  const file = $('f').files[0], key = $('k').value.trim();
+  if (!file || !key) return alert('Choisissez votre index.html et collez votre clé API.');
+  $('go').disabled = true; $('dl').hidden = true; $('log').textContent = '';
+  try {
+    const { fr, i18n } = extract(await file.text());
+    const jobs = [{ code: 'fr', texts: fr }];
+    for (const [name, code] of Object.entries(MAP)) {
+      if (!i18n[name]) continue;
+      jobs.push({ code, texts: Object.fromEntries(Object.entries(i18n[name]).filter(([k]) => /^(axe|ia_)/.test(k))) });
+    }
+    const total = jobs.reduce((s, j) => s + Object.keys(j.texts).length, 0);
+    const chars = jobs.reduce((s, j) => s + Object.values(j.texts).join('').length, 0);
+    log(total + ' textes, environ ' + chars + ' caractères à lire.');
+    $('p').hidden = false; $('p').max = total; $('p').value = 0;
+    const files = [], names = [], voices = {};
+    for (const { code, texts } of jobs) {
+      let voice;
+      try { voice = await pickVoice(code, key); } catch (e) { if (e.status === 400 || e.status === 403) throw e; log('✗ ' + code + ' : ' + e.message); }
+      if (!voice) { log('✗ ' + code + ' : aucune voix Google disponible (l\'application utilisera la voix du téléphone).'); $('p').value += Object.keys(texts).length; continue; }
+      voices[code] = voice.name; log('● ' + code + ' → ' + voice.name);
+      for (const [k, text] of Object.entries(texts)) {
+        try {
+          files.push({ name: 'audio/' + code + '/' + k + '.mp3', data: await synth(text, voice, key) });
+          names.push(code + '/' + k + '.mp3');
+        } catch (e) { log('  ✗ ' + code + '/' + k + ' : ' + e.message); }
+        $('p').value++;
+      }
+    }
+    files.push({ name: 'audio/manifest.json', data: new TextEncoder().encode(JSON.stringify({ version: Date.now(), files: names, voices }, null, 1)) });
+    $('dl').href = URL.createObjectURL(zip(files)); $('dl').hidden = false;
+    log('\nTerminé : ' + names.length + ' fichiers. Décompressez audio.zip à côté de index.html (dossier « audio »).');
+  } catch (e) {
+    log('\nERREUR : ' + e.message + (e.status === 400 || e.status === 403 ? '\n(Clé invalide, API Text-to-Speech non activée ou clé mal restreinte.)' : ''));
+  }
+  $('go').disabled = false;
+};
+</script>
+</body>
+</html>

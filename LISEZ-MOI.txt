@@ -1,0 +1,30 @@
+OEPRE FORBACH - VERSION AVEC AUDIO ET MODE HORS LIGNE
+=====================================================
+
+CONTENU
+  index.html, sw.js, manifest.webmanifest, icons/   -> à mettre en ligne (même dossier)
+  audio/                                            -> les voix (à générer, voir ci-dessous)
+  outils/generateur-audio.html                      -> à garder sur votre ordinateur, NE PAS mettre en ligne
+
+1) GÉNÉRER LES VOIX (une seule fois, puis à chaque modification des textes)
+  a. Google Cloud : activez l'API « Cloud Text-to-Speech », créez une clé API et restreignez-la à cette API.
+  b. Ouvrez outils/generateur-audio.html dans Chrome ou Edge.
+  c. Choisissez votre index.html, collez la clé, cliquez « Générer les audios » (quelques minutes).
+  d. Téléchargez audio.zip et décompressez-le ici : le dossier « audio » doit contenir manifest.json et un sous-dossier par langue.
+  e. Supprimez la clé dans Google Cloud.
+  Le script choisit automatiquement la meilleure voix disponible par langue (Chirp3-HD, Neural2, WaveNet, Standard).
+  Les langues sans voix Google sont signalées « ✗ » : l'application y utilise alors la voix intégrée du téléphone
+  (si elle existe), sinon le bouton affiche « Voix indisponible sur ce téléphone ».
+
+2) METTRE EN LIGNE
+  Copiez tout le dossier (sauf « outils ») sur votre hébergement. Le mode hors ligne exige HTTPS (ou localhost).
+
+3) MODE HORS LIGNE
+  Après une première visite en ligne, l'application (pages, icônes, polices) reste disponible sans internet.
+  Quand un parent choisit sa langue, les audios du français et de cette langue sont téléchargés en arrière-plan.
+  Les parents peuvent « Ajouter à l'écran d'accueil » pour l'installer comme une application.
+  Pour publier une mise à jour des textes : régénérez les audios et incrémentez STATIC dans sw.js (oepre-static-v2, etc.).
+
+LIMITES CONNUES
+  - Tailwind est encore chargé depuis internet à la première visite, puis conservé par le service worker.
+  - Pas d'audio pour les libellés courts (numéros d'urgence) ni pour le message d'accueil.

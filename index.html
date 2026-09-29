@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OEPRE Forbach : guide pour les parents (langue, valeurs, vie scolaire, urgences), avec traductions en 10 langues.">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/icon-180.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏫</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Application OEPRE - Forbach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; display: flex; justify-content: center; min-height: 100vh; min-height: 100dvh; margin: 0; }
+        .app-container { width: 100%; max-width: 480px; background: #f8fafc; min-height: 100vh; min-height: 100dvh; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); overflow-x: hidden; display: flex; flex-direction: column; }
+        
+        @media (min-width: 500px) { 
+            .app-container { min-height: 850px; margin-top: 2rem; margin-bottom: 2rem; border-radius: 40px; border: 12px solid #334155; } 
+        }
+
+        .btn-3d { transition: all 0.1s ease; border-bottom-width: 4px; border-color: #cbd5e1; cursor: pointer; user-select: none; }
+        .btn-3d:active { transform: translateY(4px); border-bottom-width: 0px; margin-top: 4px; }
+        
+        .screen { display: none; flex-direction: column; flex-grow: 1; padding: 20px; padding-top: 80px; padding-bottom: 60px; }
+        .screen.active { display: flex; animation: fadeIn 0.25s ease-out; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 70px; background: white; border-bottom: 1px solid #e2e8f0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; display: none; }
+
+        .trad-content { display: none; animation: expandDown 0.2s ease-out; }
+        .trad-content.active { display: block; }
+        @keyframes expandDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .rtl-text { direction: rtl; text-align: right; font-family: Tahoma, Arial, sans-serif; }
+
+        /* --- Améliorations techniques (aucun changement de rendu) --- */
+        [tabindex="-1"]:focus { outline: none; }
+        .sos-card { display: block; text-decoration: none; }
+        .sos-card .rtl-text { text-align: center; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="app">
+
+    <div class="top-bar" id="topBar">
+        <button onclick="goBack()" class="text-sm font-black text-slate-700 bg-slate-100 px-4 py-2.5 rounded-xl hover:bg-slate-200 transition-colors">← Retour</button>
+        <div class="flex gap-2">
+            <button onclick="goHome()" class="text-sm font-black text-indigo-700 bg-indigo-50 px-3 py-2.5 rounded-xl border border-indigo-200">🏠 Accueil</button>
+        </div>
+    </div>
+
+    <div id="screen-intro" class="screen active justify-between text-center pt-6">
+        <div>
+            <div class="inline-block bg-indigo-100 text-indigo-800 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider mb-2">Semaine de l'intégration 2026</div>
+            <h1 class="text-3xl font-black text-slate-900 mb-1">OEPRE Forbach</h1>
+            <p class="text-xs font-bold text-indigo-600 mb-4">Ouvrir l'École aux Parents pour la Réussite des Enfants</p>
+            
+            <!-- ENCART ACCUEIL INFORMATIONNEL AVEC TRADUCTION ERGONOMIQUE INTÉGRÉE -->
+            <div class="bg-gradient-to-br from-indigo-900 to-indigo-950 text-white p-5 rounded-3xl text-left mb-6 shadow-md relative overflow-hidden">
+                <div class="absolute right-[-10px] bottom-[-10px] opacity-10 text-8xl">🏫</div>
+                <div class="relative z-10">
+                    <h2 class="font-black text-base mb-2 flex items-center">✨ Intégration & Réussite</h2>
+                    <p class="text-indigo-100 text-xs leading-relaxed font-medium mb-3">
+                        Bienvenue au Lycée Blaise Pascal. Ce parcours d'accompagnement s'inscrit pleinement dans la démarche d'<strong>intégration républicaine</strong> et de soutien à la <strong>réussite des enfants</strong>, vous offrant toutes les clés de l'autonomie en France.
+                    </p>
+                    
+                    <!-- Bouton Traduire l'encadré d'accueil collé au texte -->
+                    <button id="introTradBtn" aria-expanded="false" onclick="toggleIntroTrad(this)" class="mb-2 text-[11px] font-black text-indigo-200 bg-indigo-800/90 px-3 py-1.5 rounded-xl border border-indigo-700 hover:bg-indigo-700 w-full flex items-center justify-center">
+                        <span class="mr-1 icon-intro-lang">🌍</span> <span class="btn-intro-text">Traduire ce message</span>
+                    </button>
+                    <div id="intro-trad-box" class="trad-content mt-2 p-3 bg-indigo-950/90 rounded-xl border border-indigo-800">
+                        <div class="text-xs font-bold text-indigo-100" id="intro-trad-text"></div>
+                    </div>
+
+                    <div class="bg-indigo-800/80 p-2.5 rounded-xl border border-indigo-700/50 text-[10px] font-semibold text-indigo-200 mt-2">
+                        💡 <strong>Conseil :</strong> L'application est en français pour progresser. Appuyez sur le bouton <strong>🌍 Traduction</strong> sous chaque information si besoin.
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-xs font-bold text-slate-500 mb-3 uppercase tracking-wider">Choisissez votre langue d'aide (Ordre alphabétique) :</p>
+            
+            <!-- LISTE DES 10 LANGUES TRIÉES PAR ORDRE ALPHABÉTIQUE -->
+            <div class="grid grid-cols-2 gap-2.5 mb-4">
+                <!-- 1. Albanais -->
+                <button class="btn-3d bg-white p-2.5 rounded-2xl flex items-center justify-center border-2 border-slate-200" onclick="selectLang('Albanais', 'Shqip', '🇦🇱')">
+                    <span class="text-2xl mr-2">🇦🇱</span>
+                    <div class="text-left"><div class="font-black text-xs text-slate-800">Shqip</div><div class="text-[9px] text-slate-400 font-bold">Albanais</div></div>
+                </button>
+                <!-- 2. Anglais -->
+                <button class="btn-3d bg-white p-2.5 rounded-2xl flex items-center justify-center border-2 border-slate-200" onclick="selectLang('Anglais', 'English', '🇬🇧')">
+                    <span class="text-2xl mr-2">🇬🇧</span>
+                    <div class="text-left"><div class="font-black text-xs text-slate-800">English</div><div class="text-[9px] text-slate-400 font-bold">Anglais</div></div>
+                </button>
+                <!-- 3. Arabe -->
+                <button class="btn-3d bg-white p-2.5 rounded-2xl flex items-center justify-center border-2 border-slate-200" onclick="selectLang('Arabe', 'العربية', '🇩🇿')">
+                    <span class="text-2xl mr-2">🇩🇿</span>
+                    <div class="text-left"><div class="font-black text-xs text-slate-800">العربية</div><div class="text-[9px] text-slate-400 font-bold">Arabe</div></div>
+                </button>
+                <!-- 4. Arménien -->
+                <button class="btn-3d bg-white p-2.5 rounded-2xl flex items-center justify-center border-2 border-slate-200" onclick="selectLang('Armenien', 'Հայերեն', '🇦🇲')">
+                    <span class="text-2xl mr-2">🇦🇲</span>
+                    <div class="text-left"><div class="font-black text-xs text-slate-800">Հայերեն</div><div class="text-[9px] text-slate-400 font-bold">Arménien</div></div>
+                </button>
+                <!-- 5. Dari -->
+                <button class="btn-3d bg-white p-2.5 rounded-2xl flex items-center justify-center border-2 border-slate-200" onclick="selectLang('Dari', 'دری', '🇦🇫')">
+                    <span class="text-2xl mr-2">🇦🇫</span>
+                    <div class="text-left"><div class="font-black text-xs text-slate-800">دری</div><div class="text-[9px] text-slate-400 font-bold">Dari</div></div>
+                </button>
+                <!-- 6. Géorgien -->
+                <button class="btn-3d bg-white p-2.5 rounded-2xl flex items-center justify-center border-2 border-slate-200" onclick="selectLang('Georgien', 'ქართული', '🇬🇪')">
+                    <span class="text-2xl mr-2">🇬🇪</span>
+                    <div class="text-left"><div class="font-black text-xs text-slate-800">ქართული</div><div class="text-[9px] text-slate-400 font-bold">Géorgien</div></div>
+                </button>
+                <!-- 7. Pachto -->
+                <button class="btn-3d bg-white p-2.5 rounded-2xl flex items-center justify-center border-2 border-slate-200" onclick="selectLang('Pachto', 'پښتو', '🇦🇫')">
+                    <span class="text-2xl mr-2">🇦🇫</span>
+                    <div class="text-left"><div class="font-black text-xs text-slate-800">پښتو</div><div class="text-[9px] text-slate-400 font-bold">Pachto</div></div>
+                </button>
+                <!-- 8. Russe -->
+                <button class="btn-3d bg-white p-2.5 rounded-2xl flex items-center justify-center border-2 border-slate-200" onclick="selectLang('Russe', 'Русский', '🇷🇺')">
+                    <span class="text-2xl mr-2">🇷🇺</span>
+                    <div class="text-left"><div class="font-black text-xs text-slate-800">Русский</div><div class="text-[9px] text-slate-400 font-bold">Russe</div></div>
+                </button>
+                <!-- 9. Turc -->
+                <button class="btn-3d bg-white p-2.5 rounded-2xl flex items-center justify-center border-2 border-slate-200" onclick="selectLang('Turc', 'Türkçe', '🇹🇷')">
+                    <span class="text-2xl mr-2">🇹🇷</span>
+                    <div class="text-left"><div class="font-black text-xs text-slate-800">Türkçe</div><div class="text-[9px] text-slate-400 font-bold">Turc</div></div>
+                </button>
+                <!-- 10. Ukrainien -->
+                <button class="btn-3d bg-white p-2.5 rounded-2xl flex items-center justify-center border-2 border-slate-200" onclick="selectLang('Ukrainien', 'Українська', '🇺🇦')">
+                    <span class="text-2xl mr-2">🇺🇦</span>
+                    <div class="text-left"><div class="font-black text-xs text-slate-800">Українська</div><div class="text-[9px] text-slate-400 font-bold">Ukrainien</div></div>
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="screen-home" class="screen">
+        <div class="bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-3xl p-6 mb-6 text-white shadow-md">
+            <h2 class="text-2xl font-black mb-1">Espace Parent</h2>
+            <div class="text-indigo-200 font-bold text-sm">Les 3 axes de votre intégration</div>
+        </div>
+
+        <div class="space-y-4">
+            <button onclick="showScreen('screen-axe1')" class="btn-3d w-full bg-white rounded-2xl p-4 border-2 border-slate-200 flex items-center text-left">
+                <div class="text-3xl mr-4 p-3 bg-blue-50 rounded-2xl">🗣️</div>
+                <div class="flex-grow">
+                    <h3 class="font-black text-base text-slate-900">1. Langue & Certification</h3>
+                    <div class="text-xs text-slate-500 font-bold mt-1">Du niveau A1 à la naturalisation (B2)</div>
+                </div>
+            </button>
+
+            <button onclick="showScreen('screen-axe2')" class="btn-3d w-full bg-white rounded-2xl p-4 border-2 border-slate-200 flex items-center text-left">
+                <div class="text-3xl mr-4 p-3 bg-rose-50 rounded-2xl">⚖️</div>
+                <div class="flex-grow">
+                    <h3 class="font-black text-base text-slate-900">2. Valeurs & Citoyenneté</h3>
+                    <div class="text-xs text-slate-500 font-bold mt-1">Laïcité, mixité, examen civique 2026</div>
+                </div>
+            </button>
+
+            <button onclick="showScreen('screen-axe3')" class="btn-3d w-full bg-white rounded-2xl p-4 border-2 border-slate-200 flex items-center text-left">
+                <div class="text-3xl mr-4 p-3 bg-emerald-50 rounded-2xl">🏫</div>
+                <div class="flex-grow">
+                    <h3 class="font-black text-base text-slate-900">3. Vie Scolaire & Rôle</h3>
+                    <div class="text-xs text-slate-500 font-bold mt-1">Scolarité, Pronote, aides financières</div>
+                </div>
+            </button>
+
+            <div class="border-t-2 border-dashed border-slate-200 my-2"></div>
+
+            <button onclick="showScreen('screen-ia')" class="btn-3d w-full bg-violet-50 rounded-2xl p-4 border-2 border-violet-200 flex items-center text-left">
+                <div class="text-3xl mr-4 p-3 bg-white rounded-2xl">🤖</div>
+                <div class="flex-grow">
+                    <h3 class="font-black text-base text-violet-900">L'IA, mon tuteur quotidien</h3>
+                    <div class="text-xs text-violet-600 font-bold mt-1">Exemples concrets pour l'autonomie</div>
+                </div>
+            </button>
+
+            <button onclick="showScreen('screen-urgences')" class="btn-3d w-full bg-red-50 rounded-2xl p-4 border-2 border-red-200 flex items-center text-left">
+                <div class="text-3xl mr-4 p-3 bg-white rounded-2xl">🆘</div>
+                <div class="flex-grow">
+                    <h3 class="font-black text-base text-red-900">Urgences & Administrations</h3>
+                    <div class="text-xs text-red-600 font-bold mt-1">Santé, Mairie, CPAM (Forbach)</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <div id="screen-axe1" class="screen">
+        <h2 class="text-2xl font-black text-slate-900 mb-2">1. Langue & Certification</h2>
+        <p class="text-sm font-bold text-slate-600 mb-6">Comprendre les diplômes officiels du CECRL (Cadre européen). Ces examens sont des démarches personnelles importantes pour vos documents administratifs.</p>
+        
+        <div class="space-y-5 overflow-y-auto pb-4">
+            <!-- Bloc A1 -->
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm">
+                <h4 class="font-black text-base text-slate-900 mb-2">🟢 Niveau A1 (Découverte)</h4>
+                <p data-audio-fr="axe1_a1" class="text-sm font-semibold text-slate-700 leading-relaxed mb-3">
+                    Comprendre et utiliser des mots familiers et des expressions très courantes au quotidien. <br>
+                    <strong class="text-indigo-700">Utilité : Ce niveau est obligatoire pour valider le Contrat d'Intégration Républicaine (CIR).</strong>
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe1_a1" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe1_a1')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-100 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-sm font-bold text-slate-800" data-i18n="axe1_a1"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe1_a1" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+            <!-- Bloc A2 -->
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm">
+                <h4 class="font-black text-base text-slate-900 mb-2">🔵 Niveau A2 (Intermédiaire)</h4>
+                <p data-audio-fr="axe1_a2" class="text-sm font-semibold text-slate-700 leading-relaxed mb-3">
+                    Pouvoir communiquer lors de tâches simples et habituelles (parler avec l'école, faire des achats simples).<br>
+                    <strong class="text-indigo-700">Utilité : Niveau exigé pour obtenir la carte de séjour pluriannuelle.</strong>
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe1_a2" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe1_a2')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-100 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-sm font-bold text-slate-800" data-i18n="axe1_a2"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe1_a2" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+            <!-- Bloc B1 -->
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm">
+                <h4 class="font-black text-base text-slate-900 mb-2">🟣 Niveau B1 (Seuil)</h4>
+                <p data-audio-fr="axe1_b1" class="text-sm font-semibold text-slate-700 leading-relaxed mb-3">
+                    Se débrouiller dans la plupart des situations de la vie quotidienne, raconter un événement, expliquer un projet.<br>
+                    <strong class="text-indigo-700">Utilité : Exigé pour obtenir la carte de résident (valable 10 ans).</strong>
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe1_b1" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe1_b1')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-100 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-sm font-bold text-slate-800" data-i18n="axe1_b1"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe1_b1" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+            <!-- Bloc B2 -->
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm">
+                <h4 class="font-black text-base text-slate-900 mb-2">🟡 Niveau B2 (Avancé)</h4>
+                <p data-audio-fr="axe1_b2" class="text-sm font-semibold text-slate-700 leading-relaxed mb-3">
+                    Comprendre le contenu de sujets complexes, s'exprimer avec aisance et spontanéité avec un Français.<br>
+                    <strong class="text-indigo-700">Utilité : Ce niveau est désormais obligatoire (à l'oral et à l'écrit) pour demander la nationalité française (naturalisation).</strong>
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe1_b2" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe1_b2')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-100 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-sm font-bold text-slate-800" data-i18n="axe1_b2"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe1_b2" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-axe2" class="screen">
+        <h2 class="text-2xl font-black text-slate-900 mb-2">2. Valeurs & Citoyenneté</h2>
+        <p class="text-sm font-bold text-slate-600 mb-6">Comprendre les principes fondamentaux de la France pour faciliter votre vie citoyenne et sociale.</p>
+
+        <div class="space-y-5 overflow-y-auto pb-4">
+            
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm">
+                <h4 class="font-black text-base text-slate-900 mb-2">🏛️ La Laïcité à l'école</h4>
+                <p data-audio-fr="axe2_laicite" class="text-sm font-semibold text-slate-700 leading-relaxed mb-3">
+                    L'école publique est un lieu neutre. Les personnels et les élèves ne doivent pas porter de signes religieux ostensibles (visibles). L'école garantit et respecte la liberté de conscience de tous.
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe2_laicite" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe2_laicite')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-100 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-sm font-bold text-slate-800" data-i18n="axe2_laicite"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe2_laicite" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm">
+                <h4 class="font-black text-base text-slate-900 mb-2">⚖️ Égalité et Mixité</h4>
+                <p data-audio-fr="axe2_egalite" class="text-sm font-semibold text-slate-700 leading-relaxed mb-3">
+                    Filles et garçons ont exactement les mêmes droits. À l'école, l'enseignement est mixte : ils suivent ensemble toutes les matières obligatoires, y compris l'EPS (sport) et la natation.
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe2_egalite" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe2_egalite')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-100 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-sm font-bold text-slate-800" data-i18n="axe2_egalite"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe2_egalite" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm">
+                <h4 class="font-black text-base text-slate-900 mb-2">🤝 S'intégrer par le lien social</h4>
+                <p data-audio-fr="axe2_social" class="text-sm font-semibold text-slate-700 leading-relaxed mb-3">
+                    L'intégration passe par les rencontres. S'engager dans une association de parents d'élèves ou participer aux activités locales (sport, culture) à Forbach aide toute la famille à s'intégrer.
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe2_social" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe2_social')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-100 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-sm font-bold text-slate-800" data-i18n="axe2_social"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe2_social" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-2xl border-2 border-blue-200 shadow-sm">
+                <h4 class="font-black text-base text-blue-900 mb-2">📜 Examen Civique (Obligatoire 2026)</h4>
+                <p data-audio-fr="axe2_civique" class="text-sm font-semibold text-blue-800 leading-relaxed mb-3">
+                    Depuis le 1er janvier 2026, la réussite à un QCM (questionnaire) portant sur l'histoire, les institutions et les valeurs de la France est obligatoire pour une première carte de séjour pluriannuelle, une première carte de résident et la naturalisation.
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe2_civique" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe2_civique')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-white px-3 py-2 rounded-xl border border-indigo-200 hover:bg-indigo-50 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-white rounded-xl border border-blue-100">
+                    <p class="text-sm font-bold text-blue-900" data-i18n="axe2_civique"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe2_civique" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-axe3" class="screen">
+        <h2 class="text-2xl font-black text-slate-900 mb-2">3. Vie Scolaire & Rôle de Parent</h2>
+        <p class="text-sm font-bold text-slate-600 mb-6">Comprendre le fonctionnement de l'école et dialoguer avec l'équipe pédagogique.</p>
+
+        <div class="space-y-5 overflow-y-auto pb-4">
+            
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm">
+                <h4 class="font-black text-base text-slate-900 mb-2">📈 Le parcours scolaire obligatoire</h4>
+                <p data-audio-fr="axe3_cycles" class="text-sm font-semibold text-slate-700 leading-relaxed mb-3">
+                    L'instruction est <strong>obligatoire de 3 à 16 ans</strong>. L'enfant passe par l'École Maternelle, puis l'École Élémentaire (savoirs fondamentaux). Il entre ensuite au Collège (un professeur par matière) puis au Lycée (préparation au Baccalauréat).
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe3_cycles" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe3_cycles')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-100 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-sm font-bold text-slate-800" data-i18n="axe3_cycles"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe3_cycles" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm">
+                <h4 class="font-black text-base text-slate-900 mb-2">🤝 Les outils et interlocuteurs</h4>
+                <p data-audio-fr="axe3_outils" class="text-sm font-semibold text-slate-700 leading-relaxed mb-3">
+                    Le <strong>carnet de liaison</strong> et le site web <strong>Pronote (ENT)</strong> sont vos outils quotidiens pour communiquer avec l'école, justifier une absence et suivre les notes (le bulletin). Votre contact principal est le <strong>Professeur Principal</strong> ou le <strong>C.P.E</strong> (Conseiller Principal d'Éducation).
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe3_outils" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe3_outils')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-100 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-sm font-bold text-slate-800" data-i18n="axe3_outils"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe3_outils" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm">
+                <h4 class="font-black text-base text-slate-900 mb-2">💶 Frais scolaires et Bourses</h4>
+                <p data-audio-fr="axe3_frais" class="text-sm font-semibold text-slate-700 leading-relaxed mb-3">
+                    L'école publique est totalement <strong>gratuite</strong>. Seuls les repas à la cantine et certaines fournitures sont payants. Des aides financières (Bourses scolaires) existent : elles sont calculées en fonction de vos revenus.
+                </p>
+                <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-slate-700 bg-slate-100 border-slate-200 mb-2" data-audio-lang="Francais" data-audio-key="axe3_frais" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                <button onclick="toggleTrad(this, 'axe3_frais')" class="btn-affordance flex items-center text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-100 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-sm font-bold text-slate-800" data-i18n="axe3_frais"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-indigo-600 bg-indigo-50 border-indigo-100 mt-3" data-audio-key="axe3_frais" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-ia" class="screen">
+        <h2 class="text-2xl font-black text-violet-950 mb-2">L'IA, mon tuteur</h2>
+        <p class="text-sm font-bold text-violet-700 mb-6">L'Intelligence Artificielle n'est pas là pour faire à votre place, mais pour vous aider à comprendre, traduire et communiquer en français.</p>
+        
+        <div class="space-y-5 overflow-y-auto pb-4">
+            
+            <div class="bg-white rounded-2xl border-2 border-violet-200 shadow-sm overflow-hidden p-4">
+                <h4 class="font-black text-base text-violet-900 mb-2">🌐 Traduire un document de l'école</h4>
+                <p class="text-xs font-semibold text-slate-600 mb-3">Copiez ce texte dans une IA pour traduire un mot du carnet de liaison tout en comprenant l'action demandée.</p>
+                
+                <div class="bg-violet-50 p-3 rounded-xl border border-violet-100 font-mono text-xs text-slate-700 select-all leading-relaxed" id="prompt_trad">
+                    "Je suis un parent d'élève. Traduis ce message de l'école du français vers ma langue maternelle de manière très claire. Explique-moi simplement ce que je dois faire : [Coller le texte de l'école ici]"
+                </div>
+                
+                <button onclick="copyPrompt('prompt_trad', this)" class="mt-3 flex items-center text-xs font-black text-white bg-violet-600 px-3 py-2 rounded-xl border border-violet-700 w-full justify-center">
+                    <span class="mr-2">📋</span> <span class="btn-copy-text">Copier ce texte</span>
+                </button>
+
+                <button onclick="toggleTrad(this, 'ia_trad')" class="mt-3 btn-affordance flex items-center text-xs font-black text-violet-700 bg-white px-3 py-2 rounded-xl border border-violet-200 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-violet-50 rounded-xl border border-violet-100">
+                    <p class="text-sm font-bold text-violet-900" data-i18n="ia_trad"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-violet-700 bg-white border-violet-200 mt-3" data-audio-key="ia_trad" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border-2 border-violet-200 shadow-sm overflow-hidden p-4">
+                <h4 class="font-black text-base text-violet-900 mb-2">📝 Rédiger un mot pour le professeur</h4>
+                <p class="text-xs font-semibold text-slate-600 mb-3">Copiez ce texte pour demander à l'IA d'écrire un message sans fautes.</p>
+                
+                <div class="bg-violet-50 p-3 rounded-xl border border-violet-100 font-mono text-xs text-slate-700 select-all leading-relaxed" id="prompt_write">
+                    "Agis comme mon assistant. Écris un mot très court, formel et poli en français pour le professeur principal de mon enfant. Dis-lui que mon enfant est malade aujourd'hui."
+                </div>
+                
+                <button onclick="copyPrompt('prompt_write', this)" class="mt-3 flex items-center text-xs font-black text-white bg-violet-600 px-3 py-2 rounded-xl border border-violet-700 w-full justify-center">
+                    <span class="mr-2">📋</span> <span class="btn-copy-text">Copier ce texte</span>
+                </button>
+
+                <button onclick="toggleTrad(this, 'ia_write')" class="mt-3 btn-affordance flex items-center text-xs font-black text-violet-700 bg-white px-3 py-2 rounded-xl border border-violet-200 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-violet-50 rounded-xl border border-violet-100">
+                    <p class="text-sm font-bold text-violet-900" data-i18n="ia_write"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-violet-700 bg-white border-violet-200 mt-3" data-audio-key="ia_write" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border-2 border-violet-200 shadow-sm overflow-hidden p-4">
+                <h4 class="font-black text-base text-violet-900 mb-2">🎙️ S'entraîner à parler (Mode vocal)</h4>
+                <p class="text-xs font-semibold text-slate-600 mb-3">Copiez ce texte pour faire une simulation de rendez-vous parents-professeurs avec l'IA.</p>
+                
+                <div class="bg-violet-50 p-3 rounded-xl border border-violet-100 font-mono text-xs text-slate-700 select-all leading-relaxed" id="prompt_speak">
+                    "Agis comme le professeur de mon enfant. Nous sommes à la réunion parents-professeurs. Pose-moi des questions simples en français sur sa scolarité, une par une. Attends ma réponse. Si je fais des erreurs, corrige-moi gentiment."
+                </div>
+                
+                <button onclick="copyPrompt('prompt_speak', this)" class="mt-3 flex items-center text-xs font-black text-white bg-violet-600 px-3 py-2 rounded-xl border border-violet-700 w-full justify-center">
+                    <span class="mr-2">📋</span> <span class="btn-copy-text">Copier ce texte</span>
+                </button>
+
+                <button onclick="toggleTrad(this, 'ia_speak')" class="mt-3 btn-affordance flex items-center text-xs font-black text-violet-700 bg-white px-3 py-2 rounded-xl border border-violet-200 w-full justify-center">
+                    <span class="mr-2 icon-lang">🌍</span> <span class="btn-text">Afficher la traduction</span>
+                </button>
+                <div class="trad-content mt-3 p-3 bg-violet-50 rounded-xl border border-violet-100">
+                    <p class="text-sm font-bold text-violet-900" data-i18n="ia_speak"></p>
+                    <button type="button" class="btn-audio flex items-center text-xs font-black px-3 py-2 rounded-xl border w-full justify-center text-violet-700 bg-white border-violet-200 mt-3" data-audio-key="ia_speak" onclick="playAudio(this)" aria-pressed="false"><span class="mr-2 audio-icon">🔊</span> <span class="audio-text">Écouter</span></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="screen-urgences" class="screen">
+        <h2 class="text-2xl font-black text-red-800 mb-2">Urgences & Santé</h2>
+        <p class="text-sm font-bold text-red-600 mb-6">Numéros gratuits (24h/24) et adresses utiles à Forbach. Appuyez sur un numéro pour appeler.</p>
+        
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <a href="tel:15" aria-label="Appeler le 15, SAMU" class="sos-card bg-white p-3.5 rounded-2xl border-2 border-red-200 text-center shadow-sm">
+                <div class="font-black text-3xl text-red-700">15</div>
+                <div class="text-xs font-black text-red-900 mt-1">SAMU</div>
+                <div class="text-[10px] text-red-700 font-bold mt-1">Urgence Médicale grave</div>
+                <div class="text-[10px] text-slate-500 font-bold mt-1" data-i18n="urgences_15_trad"></div>
+            </a>
+            <a href="tel:18" aria-label="Appeler le 18, Pompiers" class="sos-card bg-white p-3.5 rounded-2xl border-2 border-orange-200 text-center shadow-sm">
+                <div class="font-black text-3xl text-orange-700">18</div>
+                <div class="text-xs font-black text-orange-900 mt-1">Pompiers</div>
+                <div class="text-[10px] text-orange-700 font-bold mt-1">Accident, Feu, Secours</div>
+                <div class="text-[10px] text-slate-500 font-bold mt-1" data-i18n="urgences_18_trad"></div>
+            </a>
+            <a href="tel:17" aria-label="Appeler le 17, Police Secours" class="sos-card bg-white p-3.5 rounded-2xl border-2 border-indigo-200 text-center shadow-sm">
+                <div class="font-black text-3xl text-indigo-700">17</div>
+                <div class="text-xs font-black text-indigo-900 mt-1">Police Secours</div>
+                <div class="text-[10px] text-indigo-700 font-bold mt-1">Danger, agression, vol</div>
+                <div class="text-[10px] text-slate-500 font-bold mt-1" data-i18n="urgences_17_trad"></div>
+            </a>
+            <a href="tel:112" aria-label="Appeler le 112, numéro européen" class="sos-card bg-white p-3.5 rounded-2xl border-2 border-emerald-200 text-center shadow-sm">
+                <div class="font-black text-3xl text-emerald-700">112</div>
+                <div class="text-xs font-black text-emerald-900 mt-1">Numéro européen</div>
+                <div class="text-[10px] text-emerald-700 font-bold mt-1">Toutes urgences, appel gratuit</div>
+                <div class="text-[10px] text-slate-500 font-bold mt-1" data-i18n="urgences_112_trad"></div>
+            </a>
+            <a href="tel:115" aria-label="Appeler le 115, Samu Social" class="sos-card bg-white p-3.5 rounded-2xl border-2 border-blue-200 text-center shadow-sm">
+                <div class="font-black text-3xl text-blue-700">115</div>
+                <div class="text-xs font-black text-blue-900 mt-1">Samu Social</div>
+                <div class="text-[10px] text-blue-700 font-bold mt-1">Hébergement d'urgence</div>
+                <div class="text-[10px] text-slate-500 font-bold mt-1" data-i18n="urgences_115_trad"></div>
+            </a>
+            <a href="tel:119" aria-label="Appeler le 119, Enfance en danger" class="sos-card bg-white p-3.5 rounded-2xl border-2 border-yellow-200 text-center shadow-sm">
+                <div class="font-black text-3xl text-yellow-700">119</div>
+                <div class="text-xs font-black text-yellow-900 mt-1">Enfance en danger</div>
+                <div class="text-[10px] text-yellow-700 font-bold mt-1">Violence, maltraitance</div>
+                <div class="text-[10px] text-slate-500 font-bold mt-1" data-i18n="urgences_119_trad"></div>
+            </a>
+        </div>
+
+        <h3 class="font-black text-sm mb-3 text-slate-800 uppercase tracking-wide">🏥 Administrations (Forbach)</h3>
+        <div class="space-y-3 overflow-y-auto pb-4">
+            <button onclick="openMap('Hôpital Marie-Madeleine Forbach')" class="btn-3d w-full bg-white p-4 rounded-2xl border-2 border-slate-200 text-left flex items-center justify-between shadow-sm">
+                <div>
+                    <div class="font-black text-sm text-red-700">Hôpital de Forbach (Urgences)</div>
+                    <div class="text-xs text-slate-500 font-semibold">CH Marie-Madeleine</div>
+                    <div class="text-xs text-slate-400 font-semibold mt-1" data-i18n="admin_hopital_trad"></div>
+                </div>
+                <span class="text-xl bg-slate-100 p-2 rounded-xl">📍</span>
+            </button>
+            
+            <button onclick="openMap('Sous-Préfecture 11 Av. du Général Passaga Forbach')" class="btn-3d w-full bg-white p-4 rounded-2xl border-2 border-slate-200 text-left flex items-center justify-between shadow-sm">
+                <div>
+                    <div class="font-black text-sm text-slate-800">Sous-Préfecture</div>
+                    <div class="text-xs text-slate-500 font-semibold">Titres de séjour, Naturalisation</div>
+                    <div class="text-xs text-slate-400 font-semibold mt-1" data-i18n="admin_pref_trad"></div>
+                </div>
+                <span class="text-xl bg-slate-100 p-2 rounded-xl">📍</span>
+            </button>
+            
+            <button onclick="openMap('CPAM 65 Av. Saint-Rémy Forbach')" class="btn-3d w-full bg-white p-4 rounded-2xl border-2 border-slate-200 text-left flex items-center justify-between shadow-sm">
+                <div>
+                    <div class="font-black text-sm text-slate-800">C.P.A.M.</div>
+                    <div class="text-xs text-slate-500 font-semibold">Sécurité Sociale, remboursements</div>
+                    <div class="text-xs text-slate-400 font-semibold mt-1" data-i18n="admin_cpam_trad"></div>
+                </div>
+                <span class="text-xl bg-slate-100 p-2 rounded-xl">📍</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let currentLang = '';
+    let currentIcon = '';
+    let currentLangNativeName = '';
+
+    // Métadonnées des langues : code (lecteurs d'écran), sens d'écriture, nom natif, drapeau
+    const LANG_META = {
+        'Albanais':  { code: 'sq',    rtl: false, native: 'Shqip',      flag: '🇦🇱' },
+        'Anglais':   { code: 'en',    rtl: false, native: 'English',    flag: '🇬🇧' },
+        'Arabe':     { code: 'ar',    rtl: true,  native: 'العربية',    flag: '🇩🇿' },
+        'Armenien':  { code: 'hy',    rtl: false, native: 'Հայերեն',    flag: '🇦🇲' },
+        'Dari':      { code: 'fa-AF', rtl: true,  native: 'دری',        flag: '🇦🇫' },
+        'Georgien':  { code: 'ka',    rtl: false, native: 'ქართული',    flag: '🇬🇪' },
+        'Pachto':    { code: 'ps',    rtl: true,  native: 'پښتو',       flag: '🇦🇫' },
+        'Russe':     { code: 'ru',    rtl: false, native: 'Русский',    flag: '🇷🇺' },
+        'Turc':      { code: 'tr',    rtl: false, native: 'Türkçe',     flag: '🇹🇷' },
+        'Ukrainien': { code: 'uk',    rtl: false, native: 'Українська', flag: '🇺🇦' }
+    };
+
+    // Dictionnaire complet des 10 langues (triées par ordre alphabétique)
+    const i18n = {
+        'Albanais': {
+            lang_name: 'Shqip',
+            intro_text: "Mirësevini në Lycée Blaise Pascal. Ky rrugëtim mbështetjeje është plotësisht në përputhje me qasjen e integrimit republikan dhe mbështetjes për suksesin e fëmijëve, duke ju dhënë të gjitha çelësat e autonomisë në Francë.",
+            axe1_a1: "Kuptimi dhe përdorimi i fjalëve të njohura dhe shprehjeve shumë të zakonshme të përditshme. Dobia: Ky nivel është i detyrueshëm për të vërtetuar Kontratën e Integrimit Republikan (CIR).",
+            axe1_a2: "Të jeni në gjendje të komunikoni gjatë detyrave të thjeshta dhe rutinë (duke folur me shkollën, duke bërë blerje të thjeshta). Dobia: Niveli i kërkuar për të marrë lejen e qëndrimit shumëvjeçare.",
+            axe1_b1: "Të menaxhoni shumicën e situatave të hasura në jetën e përditshme, të tregoni një ngjarje, të shpjegoni një projekt. Dobia: Kërkohet për të marrë kartën e rezidentit (e vlefshme për 10 vjet).",
+            axe1_b2: "Të kuptoni përmbajtjen e temave komplekse, të shpreheni rrjedhshëm dhe spontanisht me një person francez. Dobia: Ky nivel tani është i detyrueshëm (me gojë dhe me shkrim) për të aplikuar për nënshtetësinë franceze (natyralizim).",
+            
+            axe2_laicite: "Shkolla publike është një vend neutral. Personeli dhe studentët nuk duhet të mbajnë simbole fetare të dukshme. Shkolla garanton dhe respekton lirinë e ndërgjegjes së secilit.",
+            axe2_egalite: "Vajzat dhe djemtë kanë saktësisht të njëjtat të drejta. Në shkollë, arsimi është i përzier: ata ndjekin të gjitha lëndët e detyrueshme së bashku, duke përfshirë Edukimin Fizik (sporte) dhe notin.",
+            axe2_social: "Integrimi përfshin takimin me njerëz. Përfshirja në një shoqatë të prindërve ose pjesëmarrja në aktivitete lokale (sporte, kulturë) në Forbach ndihmon të gjithë familjen të integrohet.",
+            axe2_civique: "Që nga 1 janari 2026, kalimi i një testi me zgjedhje të shumëfishta mbi historinë, institucionet dhe vlerat e Francës është i detyrueshëm për kartën e parë të qëndrimit shumëvjeçar, kartën e parë të rezidentit dhe për natyralizim.",
+            
+            axe3_cycles: "Arsimi është i detyrueshëm nga mosha 3 deri në 16 vjeç. Fëmija kalon në Kopsht, pastaj në Shkollën Fillore (aftësitë themelore). Më pas hyjnë në Shkollën e Mesme (një mësues për çdo lëndë) dhe më pas në Gjimnaz (përgatitje për Maturën).",
+            axe3_outils: "Fletorja e komunikimit dhe faqja e internetit Pronote janë mjetet tuaja të përditshme për të komunikuar me shkollën, për të justifikuar një mungesë dhe për të ndjekur notat (dëftesa). Kontakti juaj kryesor është Mësuesi Kujdestar ose C.P.E (Këshilltari Kryesor i Arsimit).",
+            axe3_frais: "Shkolla publike është plotësisht falas. Vetëm vaktet në mensë dhe disa pajisje duhet të paguhen. Ekziston ndihmë financiare (Bursa): ajo llogaritet bazuar në të ardhurat tuaja.",
+            
+            ia_trad: "Unë jam prindi i një nxënësi. Përkthejeni këtë mesazh shkollor nga frëngjishtja në gjuhën time amtare shumë qartë. Më shpjegoni thjesht se çfarë duhet të bëj: [Ngjitni tekstin e shkollës këtu]",
+            ia_write: "Vepro si asistenti im. Shkruaj një shënim shumë të shkurtër, formal dhe të sjellshëm në frëngjisht për mësuesin kujdestar të fëmijës tim. Thuaji që fëmija im është i sëmurë sot.",
+            ia_speak: "Vepro si mësuesi i fëmijës tim. Jemi në mbledhjen me prindër. Më bëj pyetje të thjeshta në frëngjisht rreth shkollimit të tij, një e nga një. Prit përgjigjen time. Nëse bëj gabime, më korrigjo me mirësjellje.",
+
+            urgences_15_trad: "Urgjenca mjekësore",
+            urgences_18_trad: "Zjarrfikësit",
+            urgences_115_trad: "Strehimi urgjent",
+            urgences_119_trad: "Fëmijë në rrezik",
+            urgences_17_trad: "Policia",
+            urgences_112_trad: "Urgjenca europiane",
+            admin_hopital_trad: "Spitali",
+            admin_pref_trad: "Leje qëndrimi",
+            admin_cpam_trad: "Sigurim shëndetësor"
+        },
+        'Anglais': {
+            lang_name: 'English',
+            intro_text: "Welcome to Lycée Blaise Pascal. This support program is fully part of the republican integration approach and support for children's success, offering you all the keys to autonomy in France.",
+            axe1_a1: "Understand and use familiar words and very common everyday expressions. Utility: This level is mandatory to validate the Republican Integration Contract (CIR).",
+            axe1_a2: "Be able to communicate during simple and routine tasks (talking to the school, making simple purchases). Utility: Level required to obtain the multi-year residency permit.",
+            axe1_b1: "Manage most situations encountered in daily life, recount an event, explain a project. Utility: Required to obtain the resident card (valid for 10 years).",
+            axe1_b2: "Understand the content of complex subjects, express oneself fluently and spontaneously with a French person. Utility: This level is now mandatory (oral and written) to apply for French nationality (naturalization).",
+            
+            axe2_laicite: "Public school is a neutral place. Staff and students must not wear conspicuous (visible) religious symbols. The school guarantees and respects everyone's freedom of conscience.",
+            axe2_egalite: "Girls and boys have exactly the same rights. At school, education is co-educational: they take all mandatory subjects together, including Physical Education (sports) and swimming.",
+            axe2_social: "Integration involves meeting people. Getting involved in a parent-teacher association or participating in local activities (sports, culture) in Forbach helps the whole family integrate.",
+            axe2_civique: "Since January 1, 2026, passing a multiple-choice test on the history, institutions, and values of France is mandatory for a first multi-year residence permit, a first resident card, and for naturalization.",
+            
+            axe3_cycles: "Education is mandatory from age 3 to 16. The child goes through Kindergarten, then Elementary School (fundamental skills). They then enter Middle School (one teacher per subject) and then High School (preparation for the Baccalaureate).",
+            axe3_outils: "The liaison notebook and the website Pronote are your daily tools to communicate with the school, justify an absence, and track grades (the report card). Your main contact is the Head Teacher or the C.P.E (Principal Educational Advisor).",
+            axe3_frais: "Public school is completely free. Only meals at the canteen and certain supplies must be paid for. Financial aid (Scholarships) exists: it is calculated based on your income.",
+            
+            ia_trad: "I am a student's parent. Translate this school message from French into my native language very clearly. Explain to me simply what I need to do: [Paste the school's text here]",
+            ia_write: "Act as my assistant. Write a very short, formal, and polite note in French for my child's head teacher. Tell them my child is sick today.",
+            ia_speak: "Act as my child's teacher. We are at the parent-teacher meeting. Ask me simple questions in French about their schooling, one by one. Wait for my answer. If I make mistakes, correct me gently.",
+
+            urgences_15_trad: "Medical emergency",
+            urgences_18_trad: "Firefighters",
+            urgences_115_trad: "Emergency housing",
+            urgences_119_trad: "Child in danger",
+            urgences_17_trad: "Police",
+            urgences_112_trad: "European emergency number",
+            admin_hopital_trad: "Hospital",
+            admin_pref_trad: "Residence permit",
+            admin_cpam_trad: "Health insurance"
+        },
+        'Arabe': {
+            lang_name: 'العربية',
+            intro_text: "مرحباً بكم في ثانوية بلز باسكال. يندرج برنامج الدعم هذا بالكامل ضمن نهج الاندماج الجمهوري ودعم نجاح الأطفال، مما يوفر لكم جميع مفاتيح الاستقلالية في فرنسا.",
+            axe1_a1: "فهم واستخدام الكلمات المألوفة والعبارات اليومية الشائعة جداً. الفائدة: هذا المستوى إلزامي للمصادقة على عقد الاندماج الجمهوري (CIR).",
+            axe1_a2: "القدرة على التواصل أثناء المهام البسيطة والروتينية (التحدث مع المدرسة، إجراء عمليات شراء بسيطة). الفائدة: المستوى المطلوب للحصول على تصريح الإقامة متعدد السنوات.",
+            axe1_b1: "التدبر في معظم المواقف التي تواجهها في الحياة اليومية، سرد حدث، شرح مشروع. الفائدة: مطلوب للحصول على بطاقة مقيم (صالحة لمدة 10 سنوات).",
+            axe1_b2: "فهم محتوى الموضوعات المعقدة، التعبير بطلاقة وعفوية مع شخص فرنسي. الفائدة: هذا المستوى إلزامي الآن (شفهياً وكتابياً) لطلب الجنسية الفرنسية (التجنس).",
+            
+            axe2_laicite: "المدرسة العامة هي مكان محايد. يجب على الموظفين والطلاب عدم ارتداء رموز دينية ظاهرة (مرئية). تضمن المدرسة وتحترم حرية الضمير للجميع.",
+            axe2_egalite: "يتمتع الفتيان والفتيات بنفس الحقوق تماماً. في المدرسة، التعليم مختلط: فهم يتابعون جميع المواد الإلزامية معاً، بما في ذلك التربية البدنية (الرياضة) والسباحة.",
+            axe2_social: "الاندماج يمر عبر اللقاءات. الانخراط في جمعية أولياء أمور الطلاب أو المشاركة في الأنشطة المحلية (رياضة، ثقافة) في فورباخ يساعد الأسرة بأكملها على الاندماج.",
+            axe2_civique: "منذ 1 يناير 2026، أصبح اجتياز اختبار متعدد الخيارات حول تاريخ ومؤسسات وقيم فرنسا إلزامياً للحصول على أول بطاقة إقامة متعددة السنوات، وأول بطاقة مقيم، وللتجنس.",
+            
+            axe3_cycles: "التعليم إلزامي من سن 3 إلى 16 عاماً. يمر الطفل عبر رياض الأطفال، ثم المدرسة الابتدائية (المهارات الأساسية). ثم يدخل الإعدادية (معلم لكل مادة) ثم الثانوية (التحضير للبكالوريا).",
+            axe3_outils: "دفتر المراسلة وموقع Pronote هما أدواتك اليومية للتواصل مع المدرسة، تبرير الغياب ومتابعة الدرجات (كشف الدرجات). جهة الاتصال الرئيسية الخاصة بك هي المعلم الرئيسي أو C.P.E (مستشار التربية الرئيسي).",
+            axe3_frais: "المدرسة العامة مجانية تماماً. يتم دفع رسوم وجبات المقصف وبعض اللوازم فقط. توجد مساعدات مالية (منح دراسية): يتم حسابها بناءً على دخلك.",
+            
+            ia_trad: "أنا ولي أمر طالب. ترجم هذه الرسالة المدرسية من الفرنسية إلى لغتي الأم بوضوح تام. اشرح لي ببساطة ما يجب علي فعله: [انسخ نص المدرسة هنا]",
+            ia_write: "تصرّف كمساعدي. اكتب ملاحظة قصيرة جداً ورسمية ومهذبة باللغة الفرنسية للمعلم الرئيسي لطفلي. أخبره أن طفلي مريض اليوم.",
+            ia_speak: "تصرّف كمعلم طفلي. نحن في اجتماع أولياء الأمور والمعلمين. اطرح علي أسئلة بسيطة باللغة الفرنسية حول دراسته، واحداً تلو الآخر. انتظر إجابتي. إذا ارتكبت أخطاء، صححني بلطف.",
+
+            urgences_15_trad: "حالة طبية طارئة",
+            urgences_18_trad: "رجال الاطفاء",
+            urgences_115_trad: "السكن الطارئ",
+            urgences_119_trad: "طفل في خطر",
+            urgences_17_trad: "الشرطة",
+            urgences_112_trad: "رقم الطوارئ الأوروبي",
+            admin_hopital_trad: "مستشفى",
+            admin_pref_trad: "تصريح الإقامة",
+            admin_cpam_trad: "تأمين صحي"
+        },
+        'Armenien': {
+            lang_name: 'Հայերեն',
+            intro_text: "Բարի գալուստ Lycée Blaise Pascal: Աջակցության այս ծրագիրն ամբողջությամբ տեղավորվում է հանրապետական ինտեգրման և երեխաների հաջողությանն աջակցելու մոտեցման մեջ՝ առաջարկելով ձեզ Ֆրանսիայում ինքնավարության բոլոր բանալիները:",
+            axe1_a1: "Հասկանալ և օգտագործել ծանոթ բառեր և շատ տարածված առօրյա արտահայտություններ: Օգտակարություն. Այս մակարդակը պարտադիր է Հանրապետական ինտեգրման պայմանագիրը (CIR) վավերացնելու համար:",
+            axe1_a2: "Կարողանալ հաղորդակցվել պարզ և առօրյա առաջադրանքների ժամանակ (խոսել դպրոցի հետ, պարզ գնումներ կատարել): Օգտակարություն. Մակարդակ, որը պահանջվում է բազմամյա կացության քարտ ստանալու համար:",
+            axe1_b1: "Կառավարել առօրյա կյանքում հանդիպող իրավիճակների մեծ մասը, պատմել իրադարձություն, բացատրել նախագիծ: Օգտակարություն. Պահանջվում է ռեզիդենտի քարտ ստանալու համար (վավեր է 10 տարի):",
+            axe1_b2: "Հասկանալ բարդ թեմաների բովանդակությունը, սահուն և ինքնաբուխ արտահայտվել ֆրանսիացու հետ: Օգտակարություն. Այս մակարդակն այժմ պարտադիր է (բանավոր և գրավոր) Ֆրանսիայի քաղաքացիություն (հպատակագրում) խնդրելու համար:",
+            
+            axe2_laicite: "Պետական դպրոցը չեզոք վայր է: Անձնակազմը և ուսանողները չպետք է կրեն ակնառու (տեսանելի) կրոնական խորհրդանիշներ: Դպրոցը երաշխավորում և հարգում է յուրաքանչյուրի խղճի ազատությունը:",
+            axe2_egalite: "Աղջիկները և տղաները ունեն ճիշտ նույն իրավունքները: Դպրոցում կրթությունը խառն է. նրանք միասին հաճախում են բոլոր պարտադիր առարկաները, ներառյալ Ֆիզիկական դաստիարակությունը (սպորտ) և լողը:",
+            axe2_social: "Ինտեգրումը ներառում է մարդկանց հետ հանդիպումներ: Ծնողական ասոցիացիային միանալը կամ Ֆորբախում տեղական միջոցառումներին (սպորտ, մշակույթ) մասնակցելը օգնում է ամբողջ ընտանիքին ինտեգրվել:",
+            axe2_civique: "2026 թվականի հունվարի 1-ից Ֆրանսիայի պատմության, հաստատությունների և արժեքների վերաբերյալ բազմակի ընտրությամբ թեստ հանձնելը պարտադիր է բազմամյա կացության առաջին քարտի, ռեզիդենտի առաջին քարտի և հպատակագրման համար:",
+            
+            axe3_cycles: "Կրթությունը պարտադիր է 3-ից 16 տարեկանների համար: Երեխան անցնում է Մանկապարտեզ, այնուհետև Տարրական դպրոց (հիմնական հմտություններ): Այնուհետև նրանք ընդունվում են Քոլեջ (մեկ ուսուցիչ յուրաքանչյուր առարկայի համար), ապա Լիցեյ (նախապատրաստություն Բակալավրիատին):",
+            axe3_outils: "Կապի տետրը և Pronote կայքը ձեր ամենօրյա գործիքներն են դպրոցի հետ հաղորդակցվելու, բացակայությունը հիմնավորելու և գնահատականներին (տեղեկագիր) հետևելու համար: Ձեր հիմնական կոնտակտը Դասղեկն է կամ C.P.E-ն (Գլխավոր կրթական խորհրդական):",
+            axe3_frais: "Պետական դպրոցը լիովին անվճար է: Վճարվում են միայն ճաշարանի սնունդը և որոշ պարագաներ: Գոյություն ունի ֆինանսական օգնություն (Կրթաթոշակներ). այն հաշվարկվում է ձեր եկամտի հիման վրա:",
+            
+            ia_trad: "Ես աշակերտի ծնող եմ: Շատ հստակ թարգմանիր այս դպրոցական հաղորդագրությունը ֆրանսերենից իմ մայրենի լեզվով: Պարզապես բացատրիր ինձ, թե ինչ պետք է անեմ. [Տեղադրեք դպրոցի տեքստն այստեղ]",
+            ia_write: "Գործիր որպես իմ օգնական: Գրիր շատ կարճ, պաշտոնական և քաղաքավարի երկտող ֆրանսերենով երեխայիս դասղեկի համար: Ասա նրան, որ երեխաս այսօր հիվանդ է:",
+            ia_speak: "Գործիր որպես իմ երեխայի ուսուցիչ: Մենք ծնողական ժողովի ենք: Տուր ինձ պարզ հարցեր ֆրանսերենով նրա ուսման մասին, մեկ առ մեկ: Սպասիր իմ պատասխանին: Եթե սխալներ անեմ, մեղմորեն ուղղիր ինձ:",
+
+            urgences_15_trad: "Բժշկական շտապ օգնություն",
+            urgences_18_trad: "Հրշեջներ",
+            urgences_115_trad: "Շտապ բնակարանային ապահովում",
+            urgences_119_trad: "Երեխան վտանգի տակ է",
+            urgences_17_trad: "Ոստիկանություն",
+            urgences_112_trad: "Եվրոպական շտապ օգնության համար",
+            admin_hopital_trad: "Հիվանդանոց",
+            admin_pref_trad: "Կացության թույլտվություն",
+            admin_cpam_trad: "Առողջության ապահովագրություն"
+        },
+        'Dari': {
+            lang_name: 'دری',
+            intro_text: "به لیسه بلیز پاسکال خوش آمدید. این برنامه حمایتی کاملاً بخشی از رویکرد ادغام جمهوری و حمایت از موفقیت کودکان است و تمام کلیدهای استقلال در فرانسه را به شما ارائه می دهد.",
+            axe1_a1: "درک و استفاده از کلمات آشنا و عبارات بسیار رایج روزمره. فایده: این سطح برای تأیید قرارداد ادغام جمهوری (CIR) الزامی است.",
+            axe1_a2: "توانایی ارتباط در طول کارهای ساده و معمول (صحبت با مدرسه، خریدهای ساده). فایده: سطح مورد نیاز برای دریافت کارت اقامت چند ساله.",
+            axe1_b1: "مدیریت بیشتر موقعیت‌های روزمره، روایت یک رویداد، توضیح یک پروژه. فایده: برای دریافت کارت اقامت (معتبر برای 10 سال) الزامی است.",
+            axe1_b2: "درک محتوای موضوعات پیچیده، بیان روان و خودجوش با یک فرد فرانسوی. فایده: این سطح اکنون برای درخواست تابعیت فرانسه (تجنس) به صورت شفاهی و کتبی الزامی است.",
+            
+            axe2_laicite: "مدرسه دولتی یک مکان بی‌طرف است. کارکنان و دانش‌آموزان نباید نمادهای مذهبی آشکار (قابل توجه) بپوشند. مدرسه آزادی وجدان همه را تضمین کرده و به آن احترام می‌گذارد.",
+            axe2_egalite: "دختران و پسران دقیقاً حقوق یکسانی دارند. در مدرسه، آموزش مختلط است: آنها تمام موضوعات اجباری از جمله تربیت بدنی (ورزش) و شنا را با هم می‌گذرانند.",
+            axe2_social: "ادغام شامل ملاقات با مردم است. مشارکت در انجمن والدین دانش‌آموزان یا شرکت در فعالیت‌های محلی (ورزش، فرهنگ) در فورباخ به ادغام کل خانواده کمک می‌کند.",
+            axe2_civique: "از 1 ژانویه 2026، قبولی در یک آزمون چندگزینه‌ای در مورد تاریخ، نهادها و ارزش‌های فرانسه برای دریافت اولین کارت اقامت چندساله، اولین کارت مقیم و تجنس الزامی است.",
+            
+            axe3_cycles: "آموزش از 3 تا 16 سالگی اجباری است. کودک از کودکستان، سپس مدرسه ابتدایی (مهارت‌های اساسی) می‌گذرد. سپس وارد دوره راهنمایی (یک معلم برای هر موضوع) و سپس دبیرستان (آمادگی برای باکالوریا) می‌شود.",
+            axe3_outils: "دفترچه ارتباط و وب‌سایت Pronote ابزارهای روزمره شما برای برقراری ارتباط با مدرسه، توجیه غیبت و پیگیری نمرات (کارنامه) هستند. تماس اصلی شما معلم راهنما یا C.P.E (مشاور ارشد آموزشی) است.",
+            axe3_frais: "مدرسه دولتی کاملاً رایگان است. فقط وعده‌های غذایی در سالن غذاخوری و برخی لوازم باید پرداخت شود. کمک‌های مالی (بورسیه تحصیلی) وجود دارد: این بر اساس درآمد شما محاسبه می‌شود.",
+            
+            ia_trad: "من والدین یک دانش‌آموز هستم. این پیام مدرسه را از فرانسوی به زبان مادری من بسیار واضح ترجمه کن. به سادگی به من توضیح بده که چه کاری باید انجام دهم: [متن مدرسه را اینجا جای‌گذاری کنید]",
+            ia_write: "مانند دستیار من عمل کن. یک یادداشت بسیار کوتاه، رسمی و مودبانه به زبان فرانسوی برای معلم راهنمای فرزندم بنویس. به او بگو که فرزندم امروز بیمار است.",
+            ia_speak: "مانند معلم فرزندم عمل کن. ما در جلسه اولیا و مربیان هستیم. از من سؤالات ساده‌ای به زبان فرانسوی در مورد تحصیلات او بپرس، یکی یکی. منتظر پاسخ من باش. اگر اشتباه کردم، با ملایمت مرا اصلاح کن.",
+
+            urgences_15_trad: "اورژانس پزشکی",
+            urgences_18_trad: "آتش نشانان",
+            urgences_115_trad: "مسکن اضطراری",
+            urgences_119_trad: "کودک در خطر است",
+            urgences_17_trad: "پولیس",
+            urgences_112_trad: "شماره اضطراری اروپا",
+            admin_hopital_trad: "بیمارستان",
+            admin_pref_trad: "اجازه اقامت",
+            admin_cpam_trad: "بیمه سلامت"
+        },
+        'Georgien': {
+            lang_name: 'ქართული',
+            intro_text: "მოგესალმებით ლიცეუმში Lycée Blaise Pascal. ეს მხარდაჭერის პროგრამა სრულად არის ინტეგრირებული რესპუბლიკური ინტეგრაციისა და ბავშვების წარმატების მხარდაჭერის მიდგომაში და გთავაზობთ საფრანგეთში ავტონომიის ყველა გასაღებს.",
+            axe1_a1: "გაიგოთ და გამოიყენოთ ნაცნობი სიტყვები და ყოველდღიური გამოთქმები. სარგებელი: ეს დონე სავალდებულოა რესპუბლიკური ინტეგრაციის ხელშეკრულების (CIR) დასადასტურებლად.",
+            axe1_a2: "შეძლოთ კომუნიკაცია მარტივი და რუტინული ამოცანების დროს (სკოლასთან საუბარი, მარტივი შესყიდვები). სარგებელი: აუცილებელი დონე მრავალწლიანი ბინადრობის ნებართვის მისაღებად.",
+            axe1_b1: "გაუმაკლავდეთ ყოველდღიურ ცხოვრებაში წარმოქმნილ სიტუაციათა უმეტესობას, მოყვეთ მოვლენის შესახებ, ახსნათ პროექტი. სარგებელი: აუცილებელია რეზიდენტის ბარათის მისაღებად (მოქმედებს 10 წელი).",
+            axe1_b2: "გაიგოთ რთული თემების შინაარსი, თავისუფლად და სპონტანურად გამოხატოთ თქვენი აზრი ფრანგთან. სარგებელი: ეს დონე ახლა სავალდებულოა (ზეპირი და წერილობითი) საფრანგეთის მოქალაქეობის (ნატურალიზაციის) მოსათხოვად.",
+            
+            axe2_laicite: "საჯარო სკოლა ნეიტრალური ადგილია. პერსონალმა და მოსწავლეებმა არ უნდა ატარონ თვალსაჩინო (ხილული) რელიგიური სიმბოლოები. სკოლა უზრუნველყოფს და პატივს სცემს ყველას სინდისის თავისუფლებას.",
+            axe2_egalite: "გოგონებს და ბიჭებს ზუსტად ერთნაირი უფლებები აქვთ. სკოლაში განათლება შერეულია: ისინი ერთად ესწრებიან ყველა სავალდებულო საგანს, ფიზიკური აღზრდისა (სპორტი) და ცურვის ჩათვლით.",
+            axe2_social: "ინტეგრაცია მოიცავს ადამიანებთან შეხვედრას. მშობელთა ასოციაციაში ჩართვა ან ადგილობრივ აქტივობებში (სპორტი, კულტურა) მონაწილეობა ფორბახში მთელ ოჯახს ეხმარება ინტეგრაციაში.",
+            axe2_civique: "2026 წლის 1 იანვრიდან, საფრანგეთის ისტორიის, ინსტიტუტებისა და ღირებულებების შესახებ ტესტის (QCM) ჩაბარება სავალდებულოა მრავალწლიანი ბინადრობის პირველი ნებართვის, რეზიდენტის პირველი ბარათის მისაღებად და ნატურალიზაციისთვის.",
+            
+            axe3_cycles: "განათლება სავალდებულოა 3-დან 16 წლამდე. ბავშვი გადის საბავშვო ბაღს, შემდეგ დაწყებით სკოლას (ძირითადი უნარები). შემდეგ შედის კოლეჯში (თითო საგანზე ერთი მასწავლებელი) და შემდეგ ლიცეუმში (მომზადება ბაკალავრიატისთვის).",
+            axe3_outils: "საკონტაქტო რვეული და ვებგვერდი Pronote არის თქვენი ყოველდღიური ინსტრუმენტები სკოლასთან კომუნიკაციისთვის, გაცდენის გასამართლებლად და ნიშნების (ტაბელის) თვალყურის სადევნებლად. თქვენი მთავარი კონტაქტია კლასის ხელმძღვანელი ან C.P.E (მთავარი საგანმანათლებლო მრჩეველი).",
+            axe3_frais: "საჯარო სკოლა სრულიად უფასოა. ფასიანია მხოლოდ სასადილოს კვება და გარკვეული ნივთები. არსებობს ფინანსური დახმარება (სტიპენდიები): იგი გამოითვლება თქვენი შემოსავლის მიხედვით.",
+            
+            ia_trad: "მე ვარ მოსწავლის მშობელი. ძალიან ნათლად თარგმნე ეს სასკოლო შეტყობინება ფრანგულიდან ჩემს მშობლიურ ენაზე. მარტივად ამიხსენი, რა უნდა გავაკეთო: [ჩასვით სკოლის ტექსტი აქ]",
+            ia_write: "იმოქმედე როგორც ჩემმა ასისტენტმა. დაწერე ძალიან მოკლე, ფორმალური და ზრდილობიანი ბარათი ფრანგულ ენაზე ჩემი შვილის კლასის ხელმძღვანელისთვის. უთხარი, რომ ჩემი შვილი დღეს ავად არის.",
+            ia_speak: "იმოქმედე როგორც ჩემი შვილის მასწავლებელმა. ჩვენ ვართ მშობელთა კრებაზე. დამისვი მარტივი კითხვები ფრანგულად მის სწავლაზე, თითო-თითოდ. დაელოდე ჩემს პასუხს. თუ შეცდომებს დავუშვებ, რბილად შემისწორე.",
+
+            urgences_15_trad: "სამედიცინო სასწრაფო",
+            urgences_18_trad: "მეხანძრეები",
+            urgences_115_trad: "გადაუდებელი საცხოვრებელი",
+            urgences_119_trad: "ბავშვი საფრთხეშია",
+            urgences_17_trad: "პოლიცია",
+            urgences_112_trad: "ევროპული გადაუდებელი დახმარების ნომერი",
+            admin_hopital_trad: "საავადმყოფო",
+            admin_pref_trad: "ბინადრობის ნებართვა",
+            admin_cpam_trad: "ჯანმრთელობის დაზღვევა"
+        },
+        'Pachto': {
+            lang_name: 'پښتو',
+            intro_text: "د بلیز پاسکال لیسې ته ښه راغلاست. دا د ملاتړ پروګرام په بشپړ ډول د جمهوري ادغام چلند او د ماشومانو د بریالیتوب مالتړ برخه ده، چې په فرانسه کې تاسو ته د خپلواکۍ ټولې کیلي درکوي.",
+            axe1_a1: "د اشنا کلمو او ډیر عام ورځني بیانونو پوهیدل او کارول. ګټورتیا: دا کچه د جمهوري ادغام تړون (CIR) تاییدولو لپاره لازمي ده.",
+            axe1_a2: "د ساده او ورځنیو کارونو پرمهال د اړیکو نیولو وړتیا (له ښوونځي سره خبرې کول، ساده پیرود کول). ګټورتیا: د څو کلن استوګنې جواز ترلاسه کولو لپاره اړین کچه.",
+            axe1_b1: "په ورځني ژوند کې د ډیری پیښو اداره کول، د یوې پیښې بیانول، د یوې پروژې تشریح کول. ګټورتیا: د اوسیدونکي کارت ترلاسه کولو لپاره اړین دی (د 10 کلونو لپاره اعتبار لري).",
+            axe1_b2: "د پیچلو موضوعاتو په مینځپانګه پوهیدل، د یو فرانسوي سړي سره په روانی او ناڅاپي ډول ځان څرګندول. ګټورتیا: دا کچه اوس د فرانسوي تابعیت (تابعیت) لپاره غوښتنه کولو لپاره (شفاهي او لیکلي) لازمي ده.",
+            
+            axe2_laicite: "عامه ښوونځی یو بې طرفه ځای دی. کارمندان او زده کونکي باید ښکاره (لیدل کیدونکي) مذهبي سمبولونه ونه اغوندي. ښوونځی د هرچا د ضمیر آزادي تضمینوي او درناوی یې کوي.",
+            axe2_egalite: "نجونې او هلکان په سمه توګه ورته حقونه لري. په ښوونځي کې، ښوونه ګډه ده: دوی ټول لازمي مضامین یوځای اخلي، پشمول د فزیکي زده کړې (سپورت) او لامبو.",
+            axe2_social: "ادغام کې د خلکو سره لیدل شامل دي. د والدینو په ټولنه کې ښکیل کیدل یا په فورباخ کې په سیمه ایزو فعالیتونو (سپورت، کلتور) کې برخه اخیستل د ټولې کورنۍ سره په یوځای کیدو کې مرسته کوي.",
+            axe2_civique: "د 2026 کال د جنورۍ له 1 راهیسې، د فرانسې د تاریخ، بنسټونو او ارزښتونو په اړه د څو انتخابي ازموینې پاس کول د څو کلن استوګنې د لومړي جواز، د استوګنې د لومړي کارت ترلاسه کولو او تابعیت ورکولو لپاره لازمي دي.",
+            
+            axe3_cycles: "زده کړه له 3 څخه تر 16 کلنۍ پورې لازمي ده. ماشوم وړکتون ته ځي، بیا لومړني ښوونځي (بنسټیز مهارتونه). بیا دوی منځني ښوونځي ته ننوځي (د هرې موضوع لپاره یو ښوونکی) او بیا عالي ښوونځي (د بکلوریا لپاره چمتووالی).",
+            axe3_outils: "د اړیکو کتابچه او د Pronote ویب پاڼه ستاسو د ښوونځي سره د خبرو اترو، د غیرحاضرۍ توجیه کولو، او نمرو (راپور کارت) تعقیبولو لپاره ستاسو ورځني وسایل دي. ستاسو اصلي اړیکه د ټولګي ښوونکی یا C.P.E (د ښوونې او روزنې مشر سلاکار) دی.",
+            axe3_frais: "عامه ښوونځی په بشپړ ډول وړیا دی. یوازې په کینټین کې خواړه او ځینې اکمالات باید تادیه شي. مالي مرستې (بورسونه) شتون لري: دا ستاسو د عاید پراساس محاسبه کیږي.",
+            
+            ia_trad: "زه د زده کونکي پلار/مور یم. دا د ښوونځي پیغام له فرانسوي څخه زما مورنۍ ژبې ته ډیر روښانه وژباړئ. ما ته په ساده ډول تشریح کړئ چې زه څه باید وکړم: [د ښوونځي متن دلته پیسټ کړئ]",
+            ia_write: "زما د مرستیال په توګه عمل وکړئ. زما د ماشوم د ټولګي ښوونکي ته په فرانسوي ژبه یو ډیر لنډ، رسمي، او نرم یادداشت ولیکئ. هغه ته ووایاست چې زما ماشوم نن ناروغ دی.",
+            ia_speak: "زما د ماشوم د ښوونکي په توګه عمل وکړئ. موږ د والدینو او ښوونکو په ناسته کې یو. ما ته د هغه د زده کړې په اړه په فرانسوي کې ساده پوښتنې وکړئ، یو په بل پسې. زما ځواب ته انتظار وکړئ. اگر زه غلطي وکړم، ما په نرمۍ سره سم کړئ.",
+
+            urgences_15_trad: "طبي بیړنی حالت",
+            urgences_18_trad: "اور وژونکي",
+            urgences_115_trad: "عاجل کور",
+            urgences_119_trad: "ماشوم په خطر کې",
+            urgences_17_trad: "پولیس",
+            urgences_112_trad: "د اروپا د بیړنیو پېښو شمېره",
+            admin_hopital_trad: "روغتون",
+            admin_pref_trad: "د استوګنې اجازه",
+            admin_cpam_trad: "روغتیایی بیمه"
+        },
+        'Russe': {
+            lang_name: 'Русский',
+            intro_text: "Добро пожаловать в лицей Блеза Паскаля. Эта программа поддержки является частью подхода республиканской интеграции и поддержки успеха детей, предоставляя вам все ключи к автономии во Франции.",
+            axe1_a1: "Понимать и использовать знакомые слова и очень распространенные повседневные выражения. Польза: Этот уровень обязателен для подтверждения Республиканского интеграционного контракта (CIR).",
+            axe1_a2: "Уметь общаться при выполнении простых и рутинных задач (разговор со школой, простые покупки). Польза: Уровень, необходимый для получения многолетнего вида на жительство.",
+            axe1_b1: "Справляться с большинством ситуаций, встречающихся в повседневной жизни, рассказать о событии, объяснить проект. Польза: Необходим для получения карты резидента (действительна 10 лет).",
+            axe1_b2: "Понимать содержание сложных тем, бегло и спонтанно выражать свои мысли с французом. Польза: Этот уровень теперь обязателен (устно и письменно) для подачи заявления на получение французского гражданства (натурализации).",
+            
+            axe2_laicite: "Государственная школа - нейтральное место. Персонал и учащиеся не должны носить броские (заметные) религиозные символы. Школа гарантирует и уважает свободу совести каждого.",
+            axe2_egalite: "Девочки и мальчики имеют абсолютно одинаковые права. В школе обучение совместное: они вместе посещают все обязательные предметы, включая физкультуру (спорт) и плавание.",
+            axe2_social: "Интеграция предполагает общение с людьми. Участие в ассоциации родителей учащихся или в местных мероприятиях (спорт, культура) в Форбаке помогает интегрироваться всей семье.",
+            axe2_civique: "С 1 января 2026 года сдача теста с несколькими вариантами ответов по истории, учреждениям и ценностям Франции обязательна для получения первого многолетнего вида на жительство, первой карты резидента и для натурализации.",
+            
+            axe3_cycles: "Обучение обязательно с 3 до 16 лет. Ребенок проходит детский сад, затем начальную школу (базовые навыки). Затем он поступает в коллеж (один учитель на предмет), а затем в лицей (подготовка к бакалавриату).",
+            axe3_outils: "Дневник и веб-сайт Pronote - это ваши ежедневные инструменты для связи со школой, объяснения отсутствия и отслеживания оценок (табель успеваемости). Ваше главное контактное лицо - классный руководитель или C.P.E (Главный советник по воспитанию).",
+            axe3_frais: "Государственная школа абсолютно бесплатна. Оплачивается только питание в столовой и некоторые принадлежности. Существует финансовая помощь (Стипендии): она рассчитывается на основе вашего дохода.",
+            
+            ia_trad: "Я родитель ученика. Очень четко переведи это школьное сообщение с французского на мой родной язык. Просто объясни мне, что я должен сделать: [Вставьте текст из школы сюда]",
+            ia_write: "Действуй как мой помощник. Напиши очень короткую, формальную и вежливую записку на французском языке для классного руководителя моего ребенка. Скажи ему, что мой ребенок сегодня болен.",
+            ia_speak: "Действуй как учитель моего ребенка. Мы на родительском собрании. Задавай мне простые вопросы на французском о его учебе, по одному. Жди моего ответа. Если я сделаю ошибки, мягко исправь меня.",
+
+            urgences_15_trad: "Скорая медицинская помощь",
+            urgences_18_trad: "Пожарные",
+            urgences_115_trad: "Экстренное жилье",
+            urgences_119_trad: "Ребенок в опасности",
+            urgences_17_trad: "Полиция",
+            urgences_112_trad: "Единый номер экстренных служб",
+            admin_hopital_trad: "Больница",
+            admin_pref_trad: "Вид на жительство",
+            admin_cpam_trad: "Медицинская страховка"
+        },
+        'Turc': {
+            lang_name: 'Türkçe',
+            intro_text: "Lycée Blaise Pascal'a hoş geldiniz. Bu destek programı, Cumhuriyet entegrasyonu yaklaşımının ve çocukların başarısının desteklenmesinin tam bir parçasıdır ve size Fransa'da özerkliğin tüm anahtarlarını sunar.",
+            axe1_a1: "Günlük hayatta tanıdık kelimeleri ve çok yaygın ifadeleri anlamak ve kullanmak. Yararı: Bu seviye, Cumhuriyet Entegrasyon Sözleşmesini (CIR) doğrulamak için zorunludur.",
+            axe1_a2: "Basit ve rutin görevler sırasında iletişim kurabilmek (okulla konuşmak, basit alışverişler yapmak). Yararı: Çok yıllık oturum izni almak için gerekli seviye.",
+            axe1_b1: "Günlük yaşamda karşılaşılan çoğu durumu idare etmek, bir olayı anlatmak, bir projeyi açıklamak. Yararı: Oturum kartı (10 yıl geçerli) almak için gereklidir.",
+            axe1_b2: "Karmaşık konuların içeriğini anlamak, bir Fransızla akıcı ve doğal bir şekilde kendini ifade etmek. Yararı: Bu seviye artık Fransız vatandaşlığına başvurmak için (sözlü ve yazılı) zorunludur.",
+            
+            axe2_laicite: "Devlet okulu tarafsız bir yerdir. Personel ve öğrenciler göze batan (görünür) dini semboller takmamalıdır. Okul, herkesin vicdan özgürlüğünü garanti eder ve buna saygı duyar.",
+            axe2_egalite: "Kızlar ve erkekler tam olarak aynı haklara sahiptir. Okulda eğitim karmadır: Beden Eğitimi (spor) ve yüzme dahil tüm zorunlu dersleri birlikte alırlar.",
+            axe2_social: "Entegrasyon insanlarla tanışmayı içerir. Forbach'ta bir veli derneğine katılmak veya yerel etkinliklere (spor, kültür) katılmak, tüm ailenin entegre olmasına yardımcı olur.",
+            axe2_civique: "1 Ocak 2026'dan itibaren, Fransa'nın tarihi, kurumları ve değerleri hakkında çoktan seçmeli bir testi geçmek, ilk çok yıllık oturum izni, ilk oturum kartı almak ve vatandaşlığa geçmek için zorunludur.",
+            
+            axe3_cycles: "Eğitim 3-16 yaş arası zorunludur. Çocuk Anaokuluna, ardından İlkokula (temel beceriler) gider. Daha sonra Ortaokula (her ders için bir öğretmen) ve ardından Liseye (Bakalorya hazırlığı) geçer.",
+            axe3_outils: "İletişim defteri ve Pronote web sitesi, okulla iletişim kurmak, devamsızlığı bildirmek ve notları (karne) takip etmek için günlük araçlarınızdır. Ana iletişim kişiniz Sınıf Öğretmeni veya C.P.E'dir (Baş Eğitim Danışmanı).",
+            axe3_frais: "Devlet okulu tamamen ücretsizdir. Sadece kantindeki yemekler ve belirli malzemeler ücretlidir. Mali yardımlar (Burslar) mevcuttur: gelirinize göre hesaplanır.",
+            
+            ia_trad: "Ben bir öğrenci velisiyim. Bu okul mesajını Fransızcadan anadilime çok net bir şekilde çevir. Bana ne yapmam gerektiğini basitçe açıkla: [Okulun metnini buraya yapıştırın]",
+            ia_write: "Asistanım olarak davran. Çocuğumun sınıf öğretmeni için Fransızca çok kısa, resmi ve kibar bir not yaz. Çocuğumun bugün hasta olduğunu söyle.",
+            ia_speak: "Çocuğumun öğretmeni gibi davran. Veli toplantısındayız. Bana okulu hakkında Fransızca basit sorular sor, teker teker. Cevabımı bekle. Hata yaparsam beni nazikçe düzelt.",
+
+            urgences_15_trad: "Tıbbi acil durum",
+            urgences_18_trad: "İtfaiye",
+            urgences_115_trad: "Acil barınma",
+            urgences_119_trad: "Tehlikedeki çocuk",
+            urgences_17_trad: "Polis",
+            urgences_112_trad: "Avrupa acil durum numarası",
+            admin_hopital_trad: "Hastane",
+            admin_pref_trad: "Oturum izni",
+            admin_cpam_trad: "Sağlık sigortası"
+        },
+        'Ukrainien': {
+            lang_name: 'Українська',
+            intro_text: "Ласкаво просимо до ліцею Блеза Паскаля. Ця програма підтримки є повною частиною підходу республіканської інтеграції та підтримки успіху дітей, надаючи вам усі ключі до автономії у Франції.",
+            axe1_a1: "Розуміти та використовувати знайомі слова та дуже поширені повсякденні вирази. Корисність: Цей рівень є обов'язковим для підтвердження Інтеграційного договору (CIR).",
+            axe1_a2: "Вміти спілкуватися під час виконання простих і звичних завдань (розмова зі школою, прості покупки). Корисність: Рівень, необхідний для отримання багаторічної посвідки на проживання.",
+            axe1_b1: "Справлятися з більшістю ситуацій повсякденного життя, розповідати про подію, пояснювати проект. Корисність: Необхідно для отримання картки резидента (дійсна 10 років).",
+            axe1_b2: "Розуміти зміст складних тем, вільно і невимушено висловлюватися з французом. Корисність: Цей рівень тепер є обов'язковим (усно та письмово) для подачі заяви на отримання громадянства.",
+            
+            axe2_laicite: "Державна школа є нейтральним місцем. Персонал та учні не повинні носити помітних (видимих) релігійних символів. Школа гарантує та поважає свободу совісті кожного.",
+            axe2_egalite: "Дівчатка та хлопчики мають абсолютно однакові права. У школі навчання є спільним: вони відвідують усі обов'язкові предмети разом, включаючи фізкультуру (спорт) та плавання.",
+            axe2_social: "Інтеграція передбачає зустрічі з людьми. Участь в асоціації батьків або місцевих заходах (спорт, культура) у Форбаху допомагає всій родині інтегруватися.",
+            axe2_civique: "З 1 січня 2026 року складання тесту з історії, установ та цінностей Франції є обов'язковим для отримання першої багаторічної посвідки на проживання, першої картки резидента та натуралізації.",
+            
+            axe3_cycles: "Навчання є обов'язковим з 3 до 16 років. Дитина йде до дитячого садка, потім до початкової школи (базові навички). Потім до коледжу (один вчитель на предмет), а потім до ліцею (підготовка до бакалаврату).",
+            axe3_outils: "Щоденник та веб-сайт Pronote - це ваші щоденні інструменти для спілкування зі школою, пояснення відсутності та відстеження оцінок (табель). Ваша головна контактна особа - класний керівник або C.P.E.",
+            axe3_frais: "Державна школа є абсолютно безкоштовною. Платити потрібно лише за харчування в їдальні та певне приладдя. Існує фінансова допомога (Стипендії): вона розраховується на основі вашого доходу.",
+            
+            ia_trad: "Я мати/батько учня. Перекладіть це шкільне повідомлення з французької на мою рідну мову дуже чітко. Просто поясніть мені, що я маю зробити: [Вставте сюди текст зі школи]",
+            ia_write: "Дій як мій помічник. Напиши дуже коротку, формальну та ввічливу записку французькою для класного керівника моєї дитини. Скажи йому, що моя дитина сьогодні хвора.",
+            ia_speak: "Дій як вчитель моєї дитини. Ми на батьківських зборах. Задавай мені прості запитання французькою про її навчання, одне за одним. Чекай на мою відповідь. Якщо я роблю помилки, обережно виправляй мене.",
+
+            urgences_15_trad: "Медична швидка допомога",
+            urgences_18_trad: "Пожежники",
+            urgences_115_trad: "Екстрене житло",
+            urgences_119_trad: "Дитина в небезпеці",
+            urgences_17_trad: "Поліція",
+            urgences_112_trad: "Єдиний номер екстрених служб",
+            admin_hopital_trad: "Лікарня",
+            admin_pref_trad: "Дозвіл на проживання",
+            admin_cpam_trad: "Медичне страхування"
+        }
+    };
+
+    // Applique langue et sens d'écriture à un bloc traduit
+    function applyLangToElement(el, meta) {
+        el.setAttribute('lang', meta.code);
+        if (meta.rtl) {
+            el.setAttribute('dir', 'rtl');
+            el.classList.add('rtl-text');
+        } else {
+            el.removeAttribute('dir');
+            el.classList.remove('rtl-text');
+        }
+    }
+
+    function selectLang(langKey, nativeName, icon) {
+        const meta = LANG_META[langKey];
+        const translations = i18n[langKey];
+        if (!meta || !translations) return;
+
+        currentLang = langKey;
+        currentLangNativeName = nativeName;
+        currentIcon = icon;
+
+        // Traductions injectées dans toute l'application
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const text = translations[el.getAttribute('data-i18n')];
+            if (text) {
+                el.textContent = text;
+                applyLangToElement(el, meta);
+            }
+        });
+
+        // Prompts IA adaptés à la langue choisie
+        const langTarget = translations.lang_name;
+        document.getElementById('prompt_trad').textContent = `"Je suis un parent d'élève. Traduis ce message de l'école du français vers ${langTarget} de manière très claire. Explique-moi simplement ce que je dois faire : [Coller le texte de l'école ici]"`;
+        document.getElementById('prompt_write').textContent = `"Agis comme mon assistant. Écris un mot très court, formel et poli en français pour le professeur principal de mon enfant. Dis-lui que mon enfant est malade aujourd'hui. (Fournis-moi également la traduction en ${langTarget} pour que je comprenne)."`;
+        document.getElementById('prompt_speak').textContent = `"Agis comme le professeur de mon enfant. Nous sommes à la réunion parents-professeurs. Pose-moi des questions simples en français sur sa scolarité, une par une. Attends ma réponse. Si je fais des erreurs, corrige-moi gentiment et explique-moi en ${langTarget}."`;
+
+        // Libellés des boutons de traduction
+        document.querySelectorAll('.btn-affordance').forEach(btn => {
+            btn.querySelector('.icon-lang').textContent = currentIcon;
+            btn.querySelector('.btn-text').textContent = `Traduction en ${nativeName}`;
+        });
+
+        refreshAudioLabels();
+        audioReady.then(() => cacheAudioFor(langKey));
+        showScreen('screen-home');
+    }
+
+    // Message d'accueil traduit : dans la langue choisie, ou dans les 10 langues si aucune n'est encore choisie
+    function renderIntroTrad() {
+        const box = document.getElementById('intro-trad-text');
+        box.textContent = '';
+        const keys = currentLang ? [currentLang] : Object.keys(LANG_META);
+        keys.forEach(key => {
+            const meta = LANG_META[key];
+            const item = document.createElement('div');
+            if (!currentLang) {
+                item.className = 'mb-3 last:mb-0';
+                const label = document.createElement('div');
+                label.className = 'text-[10px] font-black text-indigo-300 mb-0.5';
+                label.setAttribute('lang', meta.code);
+                label.textContent = meta.flag + ' ' + meta.native;
+                item.appendChild(label);
+            }
+            const text = document.createElement('div');
+            text.textContent = i18n[key].intro_text;
+            applyLangToElement(text, meta);
+            item.appendChild(text);
+            box.appendChild(item);
+        });
+    }
+
+    function toggleIntroTrad(buttonEl) {
+        const box = document.getElementById('intro-trad-box');
+        const isOpen = box.classList.toggle('active');
+        if (isOpen) renderIntroTrad();
+        buttonEl.querySelector('.btn-intro-text').textContent = isOpen ? "Masquer la traduction" : "Traduire ce message";
+        buttonEl.classList.toggle('bg-indigo-700', isOpen);
+        buttonEl.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    function toggleTrad(buttonEl, key) {
+        const contentDiv = buttonEl.nextElementSibling;
+        const isOpen = contentDiv.classList.toggle('active');
+        buttonEl.querySelector('.btn-text').textContent = isOpen ? "Masquer la traduction" : `Traduction en ${currentLangNativeName}`;
+        buttonEl.classList.toggle('bg-indigo-100', isOpen);
+        buttonEl.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    // Copie d'un prompt IA (avec solution de secours si le presse-papiers est indisponible)
+    async function copyPrompt(id, buttonEl) {
+        const text = document.getElementById(id).textContent.trim().replace(/^["“]|["”]$/g, '');
+        let ok = false;
+        try {
+            await navigator.clipboard.writeText(text);
+            ok = true;
+        } catch (e) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { ok = document.execCommand('copy'); } catch (e2) { ok = false; }
+            document.body.removeChild(ta);
+        }
+        const label = buttonEl.querySelector('.btn-copy-text');
+        label.textContent = ok ? '✓ Texte copié !' : 'Copie impossible : appuyez longuement sur le texte';
+        clearTimeout(buttonEl._copyTimer);
+        buttonEl._copyTimer = setTimeout(() => { label.textContent = 'Copier ce texte'; }, 2500);
+    }
+
+    // Remet toutes les traductions ouvertes à l'état fermé
+    function resetTranslations() {
+        document.querySelectorAll('.trad-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.btn-affordance').forEach(btn => {
+            btn.classList.remove('bg-indigo-100');
+            btn.setAttribute('aria-expanded', 'false');
+            if (currentLang) btn.querySelector('.btn-text').textContent = `Traduction en ${currentLangNativeName}`;
+        });
+        const introBtn = document.getElementById('introTradBtn');
+        introBtn.classList.remove('bg-indigo-700');
+        introBtn.setAttribute('aria-expanded', 'false');
+        introBtn.querySelector('.btn-intro-text').textContent = 'Traduire ce message';
+    }
+
+    // Navigation : synchronisée avec l'historique du navigateur (le bouton Retour du téléphone fonctionne)
+    function currentDepth() {
+        return (history.state && history.state.depth) || 0;
+    }
+
+    function render(screenId) {
+        stopAudio();
+        if (screenId !== 'screen-intro' && !currentLang) screenId = 'screen-intro';
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(screenId);
+        target.classList.add('active');
+        document.getElementById('topBar').style.display = (screenId === 'screen-intro') ? 'none' : 'flex';
+        if (screenId === 'screen-intro') resetTranslations();
+        window.scrollTo(0, 0);
+        const heading = target.querySelector('h1, h2');
+        if (heading) {
+            heading.setAttribute('tabindex', '-1');
+            heading.focus({ preventScroll: true });
+        }
+    }
+
+    function showScreen(screenId) {
+        const active = document.querySelector('.screen.active');
+        if (active && active.id === screenId) return;
+        try {
+            history.pushState({ screen: screenId, depth: currentDepth() + 1 }, '');
+        } catch (e) { /* navigation sans historique */ }
+        render(screenId);
+    }
+
+    function goBack() {
+        if (currentDepth() > 0) history.back();
+        else render('screen-intro');
+    }
+
+    function goHome() {
+        const depth = currentDepth();
+        if (depth > 0) history.go(-depth);
+        else render('screen-intro');
+    }
+
+    window.addEventListener('popstate', e => {
+        render((e.state && e.state.screen) || 'screen-intro');
+    });
+
+    function openMap(query) {
+        const url = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(query);
+        window.open(url, '_blank', 'noopener');
+    }
+
+    // ---------- Audio : fichiers MP3 (utilisables hors ligne) avec repli sur la voix du téléphone ----------
+    const AUDIO_CACHE = 'oepre-audio-v1';
+    const player = new Audio();
+    let audioFiles = new Set(), activeBtn = null, flashTimer = null;
+
+    function audioLabel(btn, playing) {
+        if (playing) return 'Arrêter';
+        const lang = btn.dataset.audioLang || currentLang;
+        return lang === 'Francais' ? 'Écouter en français' : ('Écouter en ' + ((LANG_META[lang] || {}).native || '')).trim();
+    }
+    function setAudioBtn(btn, playing, text) {
+        btn.setAttribute('aria-pressed', String(playing));
+        btn.querySelector('.audio-icon').textContent = playing ? '⏹' : '🔊';
+        btn.querySelector('.audio-text').textContent = text || audioLabel(btn, playing);
+    }
+    function refreshAudioLabels() {
+        document.querySelectorAll('.btn-audio').forEach(b => { if (b !== activeBtn) setAudioBtn(b, false); });
+    }
+    function stopAudio() {
+        const b = activeBtn; activeBtn = null;
+        player.pause(); player.removeAttribute('src'); player.load();
+        if ('speechSynthesis' in window) speechSynthesis.cancel();
+        if (b) setAudioBtn(b, false);
+    }
+    function frenchText(key) {
+        const el = document.querySelector('[data-audio-fr="' + key + '"]');
+        return el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
+    }
+    function getVoices() {
+        return new Promise(resolve => {
+            const v = speechSynthesis.getVoices();
+            if (v.length) return resolve(v);
+            const done = () => resolve(speechSynthesis.getVoices());
+            speechSynthesis.addEventListener('voiceschanged', done, { once: true });
+            setTimeout(done, 600);
+        });
+    }
+    // Voix du téléphone : renvoie false si aucune voix ne correspond à la langue
+    async function speak(text, tag) {
+        if (!('speechSynthesis' in window) || !text) return false;
+        const voices = await getVoices();
+        const want = tag.toLowerCase(), base = want.split('-')[0];
+        const norm = v => v.lang.toLowerCase().replace('_', '-');
+        const voice = voices.find(v => norm(v) === want) || voices.find(v => norm(v).split('-')[0] === base);
+        if (!voice) return false;
+        return new Promise(resolve => {
+            const u = new SpeechSynthesisUtterance(text);
+            u.voice = voice; u.lang = voice.lang;
+            u.onend = u.onerror = () => resolve(true);
+            speechSynthesis.speak(u);
+        });
+    }
+    async function playAudio(btn) {
+        if (activeBtn === btn) return stopAudio();
+        stopAudio();
+        const lang = btn.dataset.audioLang || currentLang, key = btn.dataset.audioKey;
+        if (!lang) return;
+        const isFr = lang === 'Francais';
+        const code = isFr ? 'fr' : LANG_META[lang].code;
+        const path = 'audio/' + code + '/' + key + '.mp3';
+        const text = isFr ? frenchText(key) : ((i18n[lang] || {})[key] || '');
+        activeBtn = btn; setAudioBtn(btn, true);
+        const finish = () => { if (activeBtn === btn) { activeBtn = null; setAudioBtn(btn, false); } };
+        const fallback = async () => {
+            if (activeBtn !== btn) return;
+            const ok = await speak(text, isFr ? 'fr-FR' : code);
+            if (!ok && activeBtn === btn) {
+                activeBtn = null; setAudioBtn(btn, false, 'Voix indisponible sur ce téléphone');
+                clearTimeout(flashTimer); flashTimer = setTimeout(() => setAudioBtn(btn, false), 3000);
+            } else finish();
+        };
+        if (audioFiles.has(path)) {
+            player.onended = finish; player.onerror = fallback;
+            player.src = path;
+            try { await player.play(); } catch (e) { fallback(); }
+        } else fallback();
+    }
+    async function loadAudioManifest() {
+        try {
+            const res = await fetch('audio/manifest.json');
+            if (!res.ok) return;
+            const m = await res.json();
+            audioFiles = new Set((m.files || []).map(f => 'audio/' + f));
+            if ('caches' in window && localStorage.getItem('oepre-audio-version') !== String(m.version)) {
+                await caches.delete(AUDIO_CACHE);
+                localStorage.setItem('oepre-audio-version', String(m.version));
+            }
+        } catch (e) { /* pas d'audio généré : voix du téléphone */ }
+    }
+    // Télécharge en arrière-plan les audios du français et de la langue choisie (usage hors ligne)
+    async function cacheAudioFor(langKey) {
+        if (!('caches' in window) || !navigator.onLine || (navigator.connection && navigator.connection.saveData)) return;
+        try {
+            const cache = await caches.open(AUDIO_CACHE);
+            for (const code of ['fr', LANG_META[langKey].code]) {
+                for (const path of audioFiles) {
+                    if (path.startsWith('audio/' + code + '/') && !(await cache.match(path))) await cache.add(path);
+                }
+            }
+        } catch (e) {}
+    }
+    const audioReady = loadAudioManifest();
+    if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+        window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+
+    // Initialisation
+    try { history.replaceState({ screen: 'screen-intro', depth: 0 }, ''); } catch (e) {}
+
+    document.querySelectorAll('.btn-affordance').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+
+    // Déclare la langue de chaque bouton de choix (prononciation correcte par les lecteurs d'écran)
+    document.querySelectorAll('button[onclick^="selectLang("]').forEach(btn => {
+        const m = btn.getAttribute('onclick').match(/selectLang\('([^']+)'/);
+        const meta = m && LANG_META[m[1]];
+        const label = btn.querySelector('.font-black');
+        if (meta && label) label.setAttribute('lang', meta.code);
+    });
+
+</script>
+</body>
+</html>
