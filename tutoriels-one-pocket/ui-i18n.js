@@ -16,7 +16,7 @@ render();}
 function enhanceTutor(){if(typeof lang==="undefined"||typeof byId!=="function")return;const c=lang||"fr";
 function fill(sel,k){const el=document.querySelector(sel);if(el)el.innerHTML=dual(c,k)}
 fill(".steps-meta span:first-child","progress");fill("#journey-toggle summary","journey");fill(".desktop-progress h2","journey");document.querySelectorAll(".progress-note").forEach(el=>el.innerHTML=dual(c,"journeyNote"));
-const ml=byId("meta");if(ml){const m=ml.textContent.match(/(\d+)/g)||[];const count=m.length>=2?m[m.length-2]:null;const total=m.length>=1?m[m.length-1]:null;if(count&&total)ml.innerHTML=c==="fr"?"Étape "+count+" sur "+total:'<span class="op-native" lang="'+c+'" dir="'+val(c,"dir")+'">'+esc(val(c,"step"))+" "+count+" / "+total+'</span><span class="op-french">Étape '+count+" sur "+total+"</span>";else if(total)ml.innerHTML=dual(c,"complete")}}
+const ml=byId("meta");if(ml){const m=ml.textContent.match(/(\d+)/g)||[];const count=m.length>=2?m[m.length-2]:null;const total=m.length>=1?m[m.length-1]:null;if(count&&total)ml.innerHTML=c==="fr"?"Étape "+count+" sur "+total:'<span class="op-native" lang="'+c+'" dir="'+val(c,"dir")+'">'+esc(val(c,"step"))+" "+count+" / "+total+'</span><span class="op-french">Étape '+count+" sur "+total+"</span>";else if(total)ml.innerHTML=dual(c,"complete")}
 const h=document.querySelector(".masthead");if(h&&!byId("op-home-link")){const a=document.createElement("a");a.id="op-home-link";a.className="op-home";h.append(a)}
 const home=byId("op-home-link");if(home){home.href="index.html"+(c?"?lang="+encodeURIComponent(c):"");home.innerHTML="⌂ "+dual(c,"home")}
 const other=byId("alternate");if(other){other.innerHTML="↔ "+dual(c,"other");}
