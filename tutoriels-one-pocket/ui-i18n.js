@@ -15,14 +15,14 @@ if("speechSynthesis" in window)window.speechSynthesis.addEventListener?.("voices
 render();}
 function enhanceTutor(){if(typeof lang==="undefined"||typeof byId!=="function")return;const c=lang||"fr";
 function fill(sel,k){const el=document.querySelector(sel);if(el)el.innerHTML=dual(c,k)}
-fill(".steps-meta span:first-child","progress");fill("#journey-toggle summary","journey");fill(".desktop-progress h2","journey");document.querySelectorAll(".progress-note").forEach(el=>el.innerHTML=dual(c,"journeyNote"));
+fill(".steps-meta span:first-child","progress");fill("#journey-toggle summary","journey");const summary=document.querySelector("#journey-toggle summary");if(summary){const ch=document.createElement("span");ch.className="progress-chevron";ch.setAttribute("aria-hidden","true");ch.textContent="⌄";summary.appendChild(ch)}fill(".desktop-progress h2","journey");document.querySelectorAll(".progress-note").forEach(el=>el.innerHTML=dual(c,"journeyNote"));
 const ml=byId("meta");if(ml){const m=ml.textContent.match(/(\d+)/g)||[];const count=m.length>=2?m[m.length-2]:null;const total=m.length>=1?m[m.length-1]:null;if(count&&total)ml.innerHTML=c==="fr"?"Étape "+count+" sur "+total:'<span class="op-native" lang="'+c+'" dir="'+val(c,"dir")+'">'+esc(val(c,"step"))+" "+count+" / "+total+'</span><span class="op-french">Étape '+count+" sur "+total+"</span>";else if(total)ml.innerHTML=dual(c,"complete")}
 const h=document.querySelector(".masthead");if(h&&!byId("op-home-link")){const a=document.createElement("a");a.id="op-home-link";a.className="op-home";h.append(a)}
 const home=byId("op-home-link");if(home){home.href="index.html"+(c?"?lang="+encodeURIComponent(c):"");home.innerHTML="⌂ "+dual(c,"home")}
 const other=byId("alternate");if(other){other.innerHTML="↔ "+dual(c,"other");}
 const label=document.querySelector('label[for="language-select"]');if(label)label.innerHTML="🌐 "+dual(c,"changeLanguage");
 const sel=byId("language-select");if(sel&&sel.options[0])sel.options[0].textContent=val(c,"frenchOnly")+(c==="fr"?"":" / Français");
-const title=document.querySelector(".stepTitle");if(title&&c!=="fr"&&typeof steps==="function"){const st=steps()[i];if(st){title.innerHTML='<span class="op-step-hint" lang="'+c+'" dir="'+val(c,"dir")+'">'+esc(val(c,"step"))+" "+(i+1)+'</span><span class="op-original-title">'+esc(st.title)+"</span>"}} 
+const title=document.querySelector(".stepTitle");if(title&&typeof steps==="function"){const st=steps()[i];if(st){const original=esc(st.title);title.innerHTML=c==="fr"?original:'<span class="op-step-hint" lang="'+c+'" dir="'+val(c,"dir")+'">'+esc(val(c,"step"))+" "+(i+1)+'</span><span class="op-original-title">'+original+"</span>"}}
 const t=document.querySelector(".translation-kicker");if(t)t.textContent="🌐 "+val(c,"languageHelp")+(c==="fr"?"":" · "+(dict[c]?.name||""));
 const back=byId("back");if(back)back.innerHTML="◀ "+dual(c,"back");
 const next=byId("next");if(next){const s=next.textContent;const k=s.includes("Recommencer")?"restart":s.includes("Terminer")?"finish":"next";next.innerHTML=dual(c,k)+" ▶"}
@@ -37,7 +37,7 @@ const complete=document.querySelector(".complete h1");if(complete)complete.inner
 const end=document.querySelector(".complete p");if(end)end.innerHTML=dual(c,"endText");
 const endLink=document.querySelector(".new-guide");if(endLink)endLink.innerHTML="↔ "+dual(c,"other");
 document.querySelectorAll(".audio-btn").forEach(el=>{if(el.textContent.startsWith("■"))return;const code=el.dataset.audiocode;const txt="🔊 "+val(c,"listen")+(c==="fr"?"":" / Écouter")+(code==="fr"?" · FR":" · "+(dict[c]?.name||""));el.textContent=txt;el.dataset.original=txt});
-const msg=byId("audio-info");if(msg&&msg.textContent&&c!=="fr")msg.textContent=val(c,"noVoice")+" / "+msg.textContent;
+const msg=byId("audio-info");if(msg){if(!msg.dataset.sourceMessage)msg.dataset.sourceMessage=msg.textContent||"";msg.textContent=c!=="fr"&&msg.dataset.sourceMessage?val(c,"noVoice")+" / "+msg.dataset.sourceMessage:msg.dataset.sourceMessage;}
 }
 window.OnePocketUI={dict,getLang,initHome,enhanceTutor,dual,val};
 })();
