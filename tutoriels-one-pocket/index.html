@@ -1,57 +1,79 @@
 <!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="Tutoriels pour les parents : se connecter à One Pocket et au portail Ari@ne57, avec aides linguistiques.">
-  <meta name="theme-color" content="#15384c">
-  <title>One Pocket & Ari@ne57 · Tutoriels parents</title>
-  <style>
-    :root {color-scheme: light; --ink:#15384c; --muted:#4b6570; --light:#ecf4f5; --orange:#ee7441; --line:#cfe0e6;}
-    * {box-sizing:border-box}
-    body {margin:0; background:#f0f6f7; color:var(--ink); font: 17px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;}
-    main {max-width:740px; margin:0 auto; min-height:100dvh; padding:22px 20px 44px; background:white;}
-    h1 {font-size:clamp(1.7rem,4vw,2.4rem); line-height:1.16; margin:14px 0 16px; letter-spacing:-.025em;}
-    .label {color:#9b4e2d; font-size:.81rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em;}
-    p {margin:0 0 14px;}
-    .intro {color:var(--muted); max-width:60ch;}
-    .cards {display:grid; grid-template-columns:1fr; gap:15px; margin-top:30px;}
-    .card {border:1px solid var(--line); padding:22px 20px; border-radius:20px; background:#fff;}
-    .card h2 {font-size:1.28rem; margin:0 0 7px; line-height:1.25;}
-    .card p {color:var(--muted); margin:0 0 20px;}
-    .tag {font-size:.79rem; display:inline-block; padding:4px 10px; border-radius:999px; background:var(--light); font-weight:750; margin-bottom:12px;}
-    .launch {background:var(--orange); color:white; text-decoration:none; border-radius:12px; display:inline-block; padding:13px 18px; font-weight:750; min-height:48px;}
-    a:focus-visible {outline:3px solid #1764a5; outline-offset:3px;}
-    .help {border-left:4px solid var(--orange); margin-top:26px; padding:14px 17px; background:var(--light); border-radius:0 12px 12px 0; font-size:.94rem;}
-    footer {color:var(--muted); font-size:.83rem; margin-top:30px; border-top:1px solid var(--line); padding-top:15px;}
-    @media(min-width:650px){main{padding:36px 40px 48px}.cards{grid-template-columns:1fr 1fr;}}
-  </style>
-</head>
-<body>
-  <main>
-    <div class="label">Guide numérique pour les familles</div>
-    <h1>Découvrir One Pocket et Ari@ne57</h1>
-    <p class="intro">Deux tutoriels pas à pas pour apprendre à se connecter, en suivant les écrans. Vous pouvez les consulter directement sur votre téléphone.</p>
-    <section class="cards" aria-label="Choisir un tutoriel">
-      <article class="card">
-        <div class="tag">Depuis l’application</div>
-        <h2>Se connecter à One Pocket</h2>
-        <p>Installer, choisir Ari@ne57, puis se connecter en tant que responsable légal.</p>
-        <a class="launch" href="OnePocket_01_Connexion_V4_progression.html">Ouvrir le tutoriel 1</a>
-      </article>
-      <article class="card">
-        <div class="tag">Depuis le navigateur</div>
-        <h2>Se connecter à Ari@ne57</h2>
-        <p>Accéder au portail Ari@ne57 depuis le navigateur Internet du téléphone.</p>
-        <a class="launch" href="OnePocket_02_Ariane57_V4_progression.html">Ouvrir le tutoriel 2</a>
-      </article>
-    </section>
-    <aside class="help">
-      <strong>Besoin d’aide dans une autre langue ?</strong>
-      <p>Dans chaque tutoriel, le français reste visible. Vous pouvez afficher une aide en arabe, albanais, ukrainien, turc, géorgien, pachto ou arménien. L’écoute dépend des voix disponibles sur votre appareil.</p>
-      <p style="margin:0">Ces tutoriels expliquent les manipulations : ils ne demandent jamais de saisir votre identifiant ou votre mot de passe.</p>
-    </aside>
-    <footer>Version 4 · Tutoriels pédagogiques élaborés à partir des documents transmis par un collègue du premier degré · À vérifier en situation réelle avant diffusion aux familles.</footer>
-  </main>
-</body>
-</html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173b4d">
+<meta name="description" content="Guides multilingues pour les familles : One Pocket et Ari@ne57">
+<title>One Pocket et Ari@ne57 — Guides pour les familles</title>
+<style>
+:root{--ink:#17384a;--muted:#536c79;--orange:#dd6331;--pale:#edf5f7;--edge:#cbdfe6}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:auto}
+body{margin:0;background:#eef4f5;color:var(--ink);font:17px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,a{font:inherit}button{cursor:pointer}a:focus-visible,button:focus-visible{outline:3px solid #1267a3;outline-offset:3px}
+main{max-width:850px;margin:0 auto;min-height:100dvh;padding:20px 17px 44px;background:white}
+.mini-brand{color:#9c4727;text-transform:uppercase;font-size:.75rem;font-weight:800;letter-spacing:.06em}
+.language-picker{margin:16px 0 24px;border:2px solid #b0ccd5;border-radius:18px;padding:14px;background:#f5fafb}
+.language-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.language-icon{width:44px;height:44px;border-radius:13px;background:#deedf1;display:grid;place-items:center;font-size:1.45rem;flex:none}
+.language-header strong{display:block;line-height:1.35;font-size:1rem}
+.language-header small{display:block;color:var(--muted);font-size:.79rem}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.choices button{border:1.5px solid #94b5c0;background:white;border-radius:11px;min-height:48px;color:var(--ink);font-weight:700;padding:8px 6px}
+.choices button.chosen,.choices button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:white}
+h1{font-size:clamp(1.7rem,6.4vw,2.5rem);line-height:1.13;letter-spacing:-.025em;margin:10px 0}
+.intro{color:var(--muted);margin:0 0 14px;font-size:1.02rem}
+.op-native{display:block}
+.op-french{display:block;color:#526977;font-size:.82em;font-weight:480;line-height:1.38;margin-top:3px}
+.cards{display:grid;grid-template-columns:1fr;gap:14px;margin-top:23px}
+.card{border:1.5px solid var(--edge);border-radius:19px;padding:17px;background:#fff}
+.card-head{display:flex;gap:12px;align-items:center}
+.card-logo{width:70px;height:70px;flex:none;border-radius:16px;background:#f1f6f7;display:grid;place-items:center;border:1px solid var(--edge)}
+.card-logo img{width:63px;height:63px;object-fit:contain;border-radius:12px}
+.card-logo svg{width:54px;height:54px}
+.card h2{font-size:1.23rem;line-height:1.22;margin:7px 0}
+.card p{color:var(--muted);font-size:.96rem;margin:10px 0 14px}
+.card-tag{font-size:.82rem;color:#26566b;font-weight:730;line-height:1.3}
+.launch{min-height:54px;padding:10px 14px;border-radius:12px;background:var(--orange);color:white;text-decoration:none;display:flex;gap:12px;align-items:center;justify-content:center;font-weight:800;text-align:center}
+.launch .op-french{color:#fff;opacity:.87}
+.launch .arrow{font-size:1.28rem;line-height:1}
+.listen-row{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:14px 0 0}
+.listen{min-height:46px;border:1px solid #95b7c4;background:#eef6f8;border-radius:12px;padding:8px 13px;font-weight:750;color:var(--ink)}
+.listen:disabled{opacity:.57;cursor:not-allowed}
+#voice-info{font-size:.8rem;color:#4d6974}
+.notice{background:#eff6f6;border-left:4px solid var(--orange);padding:13px;border-radius:0 13px 13px 0;margin:21px 0 0}
+.notice p{margin:3px 0 10px;font-size:.94rem}
+.notice p:last-child{margin-bottom:0}
+footer{font-size:.77rem;color:var(--muted);margin-top:25px;border-top:1px solid var(--edge);padding-top:12px}
+@media(min-width:650px){main{padding:30px 34px 45px}.choices{grid-template-columns:repeat(4,minmax(0,1fr))}.cards{grid-template-columns:1fr 1fr}.card{padding:19px}.intro{max-width:59ch}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style></head>
+<body><main>
+<div class="mini-brand">One Pocket · Ari@ne57</div>
+<section class="language-picker" aria-label="Choisir une langue / Choose a language">
+<div class="language-header"><span class="language-icon" aria-hidden="true">🌐</span><div><strong>Langue · Language · اللغة · Dil</strong><small>Choisissez votre langue en touchant son nom.</small></div></div>
+<div class="choices" role="group" aria-label="Langues disponibles">
+<button data-choice="fr" type="button" lang="fr" aria-pressed="true">Français</button>
+<button data-choice="ar" type="button" lang="ar" dir="rtl" aria-pressed="false">العربية</button>
+<button data-choice="sq" type="button" lang="sq" aria-pressed="false">Shqip</button>
+<button data-choice="uk" type="button" lang="uk" aria-pressed="false">Українська</button>
+<button data-choice="tr" type="button" lang="tr" aria-pressed="false">Türkçe</button>
+<button data-choice="ka" type="button" lang="ka" aria-pressed="false">ქართული</button>
+<button data-choice="ps" type="button" lang="ps" dir="rtl" aria-pressed="false">پښتو</button>
+<button data-choice="hy" type="button" lang="hy" aria-pressed="false">Հայերեն</button>
+</div></section>
+<h1 data-tr="guide">Guide pour les parents</h1>
+<p class="intro" data-tr="instruction">Choisissez comment vous connecter.</p>
+<div class="listen-row"><button id="listen-home" class="listen" type="button">🔊 Écouter</button><span id="voice-info" role="status"></span></div>
+<section class="cards" aria-label="Deux guides au choix">
+<article class="card">
+<div class="card-head"><div class="card-logo"><img src="data:image/webp;base64,UklGRnoKAABXRUJQVlA4IG4KAACwLQCdASqFAH4APm0ulEYkIqIhKzUsEIANiWoA0QXdfwHbBYg7b+Rf5YfNTWX7/+KOQ9pzzYvI/2r/afb18C/Uh+cfYA/ULzdv1u91XmA/Z39vfep/AD3If5n1AP6L/if//2CHoAfsB6Z/7efCL+4/7T+1V//9ZC8p/1Xtm/zfSievpdBif8S/wOGf4n6gXrTwAdokAD61cSOkU0APEz+qPR/9Vewn+vbTFRFhS+/Epq6J+RfpD++CkWuIYglORw0Sm0rxnFIh0jqrg51TEoraEd4XZNpuCkIxqijFE3zYDmpoHgqCMDTcazIpXKufXk+toDJH1XBvvYZkT1/8e5VAvNfRSvWa+gqORnnDH/oaD46fdH9Z9QYLR7INAZLL2kdJpIMLbQ/3oMgBD+VKDX/OcdWyZ1GkIdOHQPFprnfhyLEPxAlmQYAo3RbyXtT8dKmqfqrjU7Pfjnxg/J0ftUre39VG08p9Dsdo4Ia174KOScn96uTigACb+4vqg8ZGo5/PM/zzP88z+bmjPbU+YABfZDvQha7xZd83TMkuEmwd75LzVnnb7M98zCS2t1VUH3ZW3APZjgVXrCbRTg0Q8jG25onkCjx4cIQsttaQstqPCt99lLpPgBq+WOIPvwL3ZhV3I5KUyXYGgkc/mYlY9JIdVuqpeyZR30QTkMMn27a5jxqu62cTrvBve04s2i2v7Klpqhm0vTvEDUOCI41XhiJ1nikVLgFJB89r37aAgxJ9vj69v7ca6nNhtgSEoEgoRDOnAKoWMpAvNLNll/kjx3in32ihVRHI8RHxekGG4tUoZyCZtflsM4G1xBw4VslLeYM7bGKlyZK0DWHWFRnBClz9kGoKYIC4JESxzXagB3nKMkLbgM6yccwgXbiUsn2QZT2Iwgo2Gmj4SRiycmvOoBJBV2xrp2yxONqWo+D0NsfggAA5AnbqF4LYPrBeuaEhKrPIPIoFlZipLo2/OVxnuqje0BI2jOicLN+9mOOc+C6GJvgd8j5mmB1Lap3AJxhPbb/TeDoNWBsUtWt421zx2ct78V9jmSUdJlYGzPiUXWwYnw6X6jVC/KVuubjQE/93eb92OV3bU7BWEyjpHvAUitULUYJh5rBbul2IrrHOQOuIaWin3I8uT9YopCrd/CfhQai3yH6hZohUw5+dlI/mfK5hx7anB8vcIOdctNBEsgrf0fcRPlW1NY+I+s9lxQQ7cwz/93vfDoprzNfLQwcVl/A+AxHUq8ekAXI87rmWcCQIReKWUvIi901wcVE/lMbABbsZOLI0+hjxKSzBGmNeuB9YPErmoyRFJNRxt/6Chamzv893V/VewgcJTS3GS39hE0vbfhzR/KMEbSEhyXdy75/+7JFN5EPR0XtaHzMuRTHnW+dGi+4vjFXTHsSf7LyaAx4spQpTeo/KJ/uiQrAQYSKOdCjdwyxn3iRULNICFKahTguLHqLl3AtzIJlpVuatqHieUvsyat1fuAW8P6y2GXDMfeUt/NEe9nMLGRy4X+EfjpvANBRb7gWidXDNGaWSba1U4kzq/n5me3Z9eN2NUBZwxpKKJHSYxSjclpnp23oApQdGMZY3/4e5MZhbQJdVIZ4oDM5u/3yu4FzsnBt3dHyhN786ZMsk/8tFRo/Qhh/LuQJNgIXdE1seuMw9Ky9swIZID/JGoNTXPTxkrR0qgPuxm3L0MvBpD7sScASmwThRK3qVhVxlvEm36n4ASxnqybVvTyerSXJYTRfBEGaYTDEW54NIqjkbi47PY7WsUQuwjYkqWw8JG2enbLFkum9KyITVKc9ImsX/XHvbByUeM2jCEAChfN8vJgjqTc9llImP284yBLiLycKYZFXXHE+3TVqe9mN7G4o63XAOYA5MTL6bgtWAokpmoSfZiH2en8F+LienEfOcu5NssQTCWJcQmrp2rnPqNOpuF+YBExbzHiB1eQFAaqMAQpNsJz95no2Um+YIMROB4rNHnNaDK1c+M4kQD+x79NIXrXJQJzi5cfFtqdp/GHzGpqTP8Rtj5fIi0VOhPQKYifuXRkhq/VqLkKeViTWq5mbkhnDcZo2E0f2lqI8Y4t5Ktzu5E5sUWxiHNii3yjG2zos45RenhDvwkyS9Ldy1Lc2zN6h9EJTbIVX4Q+lPs2U8+OvXB+bE3mUG9qEuvd4r1QXI3N4xSfXck+DanMELfte2puXnoc0TN4i3viRs6Fv/jjtEakI9HzAWoD4tzAmvedRfD+VSSQalSuOlFkAahbEMcFSQ5wQFdYQBqwF7/2EfkIeal6imV4kor1ozLdi3UQ8NPIXotWN7swi+30KyG+qpQmSo94NTqp+2li8RqKs//3LIewqhcnGRIqJdmJc33U7NX7g/CKC/gxtRDKeG21e3ITGTsPtOt9NF3r9hNJByPTLpMXInj45uiypA977soG7+0fq+8fh2/XaXLyAcKpUVtpf8EPOTrD0rNcr8vaUm88eV8qHnw+8izP4JjefhmIM5w+BmBq55b4IEY/phm9TNfN8eGak+vx67ORmvGtEYO1Q/mdGt5hmzjpkMjWbZC5O2eEBZd/pEfRMGOnpEKWBP+QK4cy+tyKF+m7kSfIE3fLEaWEMftkO32skdxL5oxTk56JPYfWktrbSB9Wl6+2FSfsAmagv2NoLJEjSo7QPF8G4OhhjwgB/n7YVe5nTChvXMlf2T6ZeivWNkkz5//R9+j2CIuRopbp3+awzkbYAyKudPdW4v8RqWsrR2+LL+nT1GBdZaKlEp69CUtVzJWey2l33Fu7r/0iIv+Y6pJKQfcwzEJUY3+bVHR91dC8IaGCUVhPE84V3JLqYObLd/NaP2WTjX4Z9O0061NAWld5dPtICvgmrg1JNbGKLPTA7EJu1u/ji92vJphEMVv+bqBmBFxSXIruv7ofnO4n2wU4r7OWXSUPv2b5nswPq1WtDob6XFTJcHdNLHhSF/MWfXm/9qxf55fxUFrZiAr/cRhM9BP5e0lqcWlchfoUDJQnAPyO/vP6ceVAIx+kgEiQ8VvssQbtH3xHh/HAmRGaOkS6Eempp31HznQFOv/Yw2x4GKrqRgHvGeTOHYA/pdZQ/Vhez7tchSmNfOPz+nyoGVnMOLZ66lfaxQJxzjn4Ytthwsms5nkbR+0PiKoWcjA6/tYYxTv41PeZ2/fM7Ea7DCNT9wF0/WhJjAt04WSqHIU4VoETyvcDwZ06Skz36YEmoIufCeYq9iEunKV4De034MY+hzhACvWL/hORDel2AY+MkHCEm/DyOc/ccnKc4hfa/RcAhamZyjPIATHTg5+DS/S1/68qG7upwUoBOexNG/qqhCRBrNt4p2Un/9MMqYJu2mjf04DpoNogJ4j3Gw9JFIggaZfm9ShZfjmE0DIAWXEAPnmS22HJ55QXeGKsDdgwjKZUUMQmCO1KcC7PWNoLvvw6OXed1cR8bxDNHDINrZ5rHYi/5t2+GqEuwaqR+OCkvHc1RBhYy7rmZ/5adZ60YBUM+5H0VeEjFFqjDfqVBtPRojIv3m9wTH8eBLrzrxxlG1VMa+KZ79K7HIbGeZotZwhEVwZYBGUoAAAAA=" alt="Icône officielle One Pocket"></div><div><div class="card-tag">📱 <span data-tr="appType">Dans l’application</span></div><h2 data-tr="appTitle">One Pocket sur le téléphone</h2></div></div>
+<p data-tr="appDesc">Installez One Pocket et suivez les étapes de connexion.</p>
+<a class="launch" id="one-link" href="OnePocket_01_Connexion_V4_progression.html"><span class="arrow" aria-hidden="true">▶</span><span data-tr="open">Ouvrir ce tutoriel</span></a>
+</article>
+<article class="card"><div class="card-head"><div class="card-logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><rect x="5" y="11" width="54" height="43" rx="8" stroke="#174357" stroke-width="3.5"/><path d="M5 23H59" stroke="#174357" stroke-width="3.5"/><circle cx="15" cy="17" r="2.2" fill="#d96432"/><circle cx="23" cy="17" r="2.2" fill="#d96432"/><circle cx="32" cy="39" r="10" stroke="#174357" stroke-width="2.7"/><path d="M22 39h20M32 29c-7 7-7 13 0 20m0-20c7 7 7 13 0 20" stroke="#174357" stroke-width="2"/></svg></div><div><div class="card-tag">🌐 <span data-tr="browserType">Dans le navigateur</span></div><h2 data-tr="browserTitle">Ari@ne57 sur Internet</h2></div></div>
+<p data-tr="browserDesc">Ouvrez Ari@ne57 dans le navigateur de votre téléphone.</p>
+<a class="launch" id="web-link" href="OnePocket_02_Ariane57_V4_progression.html"><span class="arrow" aria-hidden="true">▶</span><span data-tr="open">Ouvrir ce tutoriel</span></a>
+</article></section>
+<aside class="notice"><p>🌐 <span data-tr="note">Le français reste visible. Les images vous montrent où appuyer.</span></p><p>🔒 <span data-tr="safety">Ne saisissez aucun mot de passe dans ce guide.</span></p></aside>
+<footer>Guides pédagogiques multilingues · Documents de référence transmis par un collègue du premier degré · Audio suivant les voix disponibles sur le téléphone · Traductions à valider avec des locuteurs.</footer>
+</main><script src="ui-i18n.js"></script><script>if(window.OnePocketUI){window.OnePocketUI.initHome()}</script></body></html>
