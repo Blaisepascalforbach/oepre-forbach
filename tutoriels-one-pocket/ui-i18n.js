@@ -29,7 +29,7 @@ const next=byId("next");if(next){const s=next.textContent;const k=s.includes("Re
 document.querySelectorAll(".progress-list .journey-state").forEach(el=>{const s=el.textContent;el.innerHTML=dual(c,s.includes("ici")?"current":"seen")});
 const help=document.querySelector(".help summary");if(help)help.innerHTML="ⓘ "+dual(c,"help");
 const methodTitle=document.querySelector(".method legend");if(methodTitle)methodTitle.innerHTML=dual(c,"methodQuestion");
-const choices=document.querySelectorAll(".method .choice");if(choices.length){choices.forEach((el,j)=>{const input=el.querySelector("input");el.innerHTML="";if(input)el.appendChild(input);const lbl=document.createElement("span");lbl.innerHTML=dual(c,j===0?"france":"edu");el.appendChild(lbl)})}
+const choices=document.querySelectorAll(".method .choice");if(choices.length){choices.forEach((el,j)=>{const input=el.querySelector("input");if(input&&input.name==="account")return;el.innerHTML="";if(input)el.appendChild(input);const lbl=document.createElement("span");lbl.innerHTML=dual(c,j===0?"france":"edu");el.appendChild(lbl)})}
 const hint=document.querySelector(".method small");if(hint)hint.innerHTML=dual(c,"choiceHint");
 const site=document.querySelector(".link-url");if(site)site.innerHTML="🌐 "+dual(c,"openSite");
 const privacy=document.querySelector(".privacy-note");if(privacy){const f=privacy.textContent;privacy.innerHTML=dual(c,"privacy")+(c==="fr"?"":'<span class="op-french">'+esc(f)+"</span>")}
